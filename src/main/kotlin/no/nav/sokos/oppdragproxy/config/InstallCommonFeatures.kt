@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.ktor.http.HttpMethod
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -12,6 +13,7 @@ import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.path
 import mu.KotlinLogging
@@ -20,7 +22,7 @@ import java.util.UUID
 import no.nav.sokos.oppdragproxy.util.exceptionhandler
 
 private val log = KotlinLogging.logger {}
-const val APP_ENDPOINT = "okonomi-ktor-template"
+const val APP_ENDPOINT = "sokos-oppdrag-proxy"
 const val X_CORRELATION_ID = "x-correlation-id"
 
 fun Application.installCommonFeatures() {
@@ -48,5 +50,10 @@ fun Application.installCommonFeatures() {
             configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             enable(SerializationFeature.INDENT_OUTPUT)
         }
+    }
+    install(CORS) {
+        allowCredentials = true
+        allowHost("okonomiportalen.intern.nav.no", listOf("https"))
+        allowMethod(HttpMethod.Get)
     }
 }
