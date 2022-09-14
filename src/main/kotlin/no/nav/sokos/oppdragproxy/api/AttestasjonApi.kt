@@ -13,8 +13,9 @@ fun Application.attestasjonApi() {
     routing {
         route("api/attestasjon") {
             get("hent-attestasjon") {
-                val nav = User(1L, "navusername", "navfirstname", "navlastname", "nav@email.com", "navpassword", "navphone", 1)
-                call.respond(nav)
+                val nav1 = User(1L, "navusername", "navfirstname", "navlastname", "nav@email.com", "navpassword", "navphone", 1)
+                val nav2 = User(2L, "navusername2", "navfirstname2", "navlastname2", "nav@email.com2", "navpassword2", "navphone2", 2)
+                call.respond(listOf(nav1, nav2))
             }
         }
     }
