@@ -1,0 +1,12 @@
+{
+  "app": "sokos-oppdrag-proxy",
+  "team": "okonomi",
+  "namespace": "okonomi",
+  "slack-channel": "okonomi-alerts-dev",
+  "slack-notify-type": "sokos-oppdrag-proxy | ",
+  "minReplicas": "1",
+  "maxReplicas": "2",
+  "ingresses": [
+    "https://sokos-oppdrag-proxy.dev.intern.nav.no"
+  ]
+}
