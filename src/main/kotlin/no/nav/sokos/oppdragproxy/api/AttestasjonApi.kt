@@ -6,16 +6,17 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import org.openapitools.client.models.Pet
-import org.openapitools.client.models.User
+import org.openapitools.client.models.Attestasjon
+import org.openapitools.client.models.ModelApiResponse
 
 fun Application.attestasjonApi() {
     routing {
-        route("api/attestasjon") {
-            get("hent-attestasjon") {
-                val nav1 = User(1L, "navusername", "navfirstname", "navlastname", "nav@email.com", "navpassword", "navphone", 1)
-                val nav2 = User(2L, "navusername2", "navfirstname2", "navlastname2", "nav@email.com2", "navpassword2", "navphone2", 2)
-                call.respond(listOf(nav1, nav2))
+        route("api") {
+            get("attestasjon") {
+                val attestasjon1 = Attestasjon(1, "SUUFORE", "29073560-34e9-11ed-a261-0242ac120002", 20216, "MND", "01.10.2021 - 30.04.2022")
+                val attestasjon2 = Attestasjon(2, "SUUFORE", "29073560-84e9-11ed-b561-0242ac120002", 21181, "MND", "01.07.2022 - 30.09.2022")
+                val apiResponse = ModelApiResponse(28098213122, "Testområde", 10002028, listOf(attestasjon1, attestasjon2))
+                call.respond(apiResponse)
             }
         }
     }

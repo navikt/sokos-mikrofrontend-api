@@ -71,7 +71,7 @@ sourceSets {
 tasks.openApiGenerate {
     generatorName.set("kotlin")
     generateModelDocumentation.set(false)
-    inputSpec.set("$rootDir/specs/pets.json")
+    inputSpec.set("$rootDir/specs/attestasjon.json")
     outputDir.set("$buildDir/generated")
     globalProperties.set(
         mapOf(
