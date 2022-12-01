@@ -13,20 +13,20 @@ Kan brukes som utgangspunkt for å opprette nye Ktor-apper for Team Økonomi.
 ## Workflows
 
 NB! Endre navn på mappen `.github/workflow_files` til `.github/workflows` for at github actions skal plukke dem opp. Dette vil sørge for at du får fire github actions:
-1. [Deploy alarmer](.github/workflows/alerts.yaml) -> For å pushe opp [alerterator.yaml](.nais/alerterator.yaml) og pushe alarmer for både prod og dev
+1. [Deploy alarmer](.github/workflowss/alerts.yaml) -> For å pushe opp [alerterator.yaml](.nais/alerterator.yaml) og pushe alarmer for både prod og dev
    1. Denne workflow kjører inviduelt og trigges også hvis det gjøres endringer i [naiserator.yaml](.nais/naiserator.yaml)
-2. [Bygg og push Docker image](.github/workflows/build-and-push-docker-image.yaml) -> For å bygge/teste prosjektet og bygge/pushe Docker image
+2. [Bygg og push Docker image](.github/workflowss/build-and-push-docker-image.yaml) -> For å bygge/teste prosjektet og bygge/pushe Docker image
    1. Denne workflow er den aller første som kjøres når kode er i `master/main` branch
-3. [Deploy til dev og prod](.github/workflows/deploy-dev-prod.yaml) -> For å pushe [naiserator.yaml](.nais/naiserator.yaml) og deploye applikasjonen til dev og prod
-   1. Denne workflow tar seg KUN av deploy av applikasjonen til NAIS. Den er avhengig av at [Bygg og test](.github/workflows/build-and-push-docker-image.yaml) går gjennom
-4. [Bygg og test PR](.github/workflows/build-pr.yaml) -> For å bygge og teste alle PR som blir opprettet
+3. [Deploy til dev og prod](.github/workflowss/deploy-dev-prod.yaml) -> For å pushe [naiserator.yaml](.nais/naiserator.yaml) og deploye applikasjonen til dev og prod
+   1. Denne workflow tar seg KUN av deploy av applikasjonen til NAIS. Den er avhengig av at [Bygg og test](.github/workflowss/build-and-push-docker-image.yaml) går gjennom
+4. [Bygg og test PR](.github/workflowss/build-pr.yaml) -> For å bygge og teste alle PR som blir opprettet
    1. Denne workflow kjøres kun når det opprettes pull requester
-5. [Sikkerhet](.github/workflows/snyk.yaml) -> For å skanne sårbarhet av avhengigheter og docker image. Kjøres hver morgen kl 06:00
-   1. Denne kjøres når [Deploy til dev og prod](.github/workflows/deploy-dev-prod.yaml) har kjørt ferdig
+5. [Sikkerhet](.github/workflowss/snyk.yaml) -> For å skanne sårbarhet av avhengigheter og docker image. Kjøres hver morgen kl 06:00
+   1. Denne kjøres når [Deploy til dev og prod](.github/workflowss/deploy-dev-prod.yaml) har kjørt ferdig
 
-NB! Hvis du ønsker at [Sikkerhet](.github/workflows/snyk.yaml) kjøres først og [Deploy til dev og prod](.github/workflows/deploy-dev-prod.yaml) kjøres NÅR `Sikkerhet` er ferdig så gjør følgende:
+NB! Hvis du ønsker at [Sikkerhet](.github/workflowss/snyk.yaml) kjøres først og [Deploy til dev og prod](.github/workflowss/deploy-dev-prod.yaml) kjøres NÅR `Sikkerhet` er ferdig så gjør følgende:
 
-i [snyk.yaml](.github/workflows/snyk.yaml) endrer du fra:
+i [snyk.yaml](.github/workflowss/snyk.yaml) endrer du fra:
 ```
 on:
   workflow_run:
@@ -39,7 +39,7 @@ on:
     workflows: [ "Bygg og push Docker image" ]
 ```
 
-og i [deploy-dev-prod.yaml](.github/workflows/deploy-dev-prod.yaml) endrer du fra:
+og i [deploy-dev-prod.yaml](.github/workflowss/deploy-dev-prod.yaml) endrer du fra:
 ```
 on:
   workflow_run:
