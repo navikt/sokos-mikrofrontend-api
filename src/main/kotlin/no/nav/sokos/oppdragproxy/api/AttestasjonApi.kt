@@ -14,9 +14,24 @@ fun Application.attestasjonApi() {
     routing {
         route("api") {
             get("attestasjon") {
-                val attestasjon1 = Attestasjon(1, "SUUFORE", "29073560-34e9-11ed-a261-0242ac120002", 20216, "MND", "01.10.2021 - 30.04.2022")
-                val attestasjon2 = Attestasjon(2, "SUUFORE", "29073560-84e9-11ed-b561-0242ac120002", 21181, "MND", "01.07.2022 - 30.09.2022")
-                val apiResponse = ModelApiResponse(28098213122, "Testområde", 10002028, listOf(attestasjon1, attestasjon2))
+                val attestasjon1 = Attestasjon(
+                    1,
+                    "SUUFORE",
+                    "29073560-34e9-11ed-a261-0242ac120002",
+                    20216,
+                    "MND",
+                    "01.10.2021 - 30.04.2022"
+                )
+                val attestasjon2 = Attestasjon(
+                    2,
+                    "SUUFORE",
+                    "29073560-84e9-11ed-b561-0242ac120002",
+                    21181,
+                    "MND",
+                    "01.07.2022 - 30.09.2022"
+                )
+                val apiResponse =
+                    ModelApiResponse(28098213122, "Testområde", 10002028, listOf(attestasjon1, attestasjon2))
                 call.respond(apiResponse)
             }
         }

@@ -22,10 +22,10 @@ import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
-import mu.KotlinLogging
-import org.slf4j.event.Level
 import java.util.UUID
+import mu.KotlinLogging
 import no.nav.sokos.oppdragproxy.metrics.prometheusRegistry
+import org.slf4j.event.Level
 
 private val log = KotlinLogging.logger {}
 const val APP_ENDPOINT = "sokos-oppdrag-proxy"
