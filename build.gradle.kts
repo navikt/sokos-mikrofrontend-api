@@ -67,44 +67,57 @@ sourceSets {
     }
 }
 
-tasks.openApiGenerate {
-    generatorName.set("kotlin")
-    generateModelDocumentation.set(false)
-    inputSpec.set("$rootDir/specs/attestasjon.json")
-    outputDir.set("$buildDir/generated")
-    globalProperties.set(
-        mapOf(
-            "models" to ""
-        )
-    )
-    configOptions.set(
-        mapOf(
-            "library" to "jvm-ktor",
-            "serializationLibrary" to "jackson"
-        )
-    )
-}
+tasks {
 
-tasks.named<ShadowJar>("shadowJar") {
-    archiveFileName.set("app.jar")
-    manifest {
-        attributes["Main-Class"] = "no.nav.sokos.oppdragproxy.BootstrapKt"
-    }
-}
-
-tasks.withType<KotlinCompile> {
-    dependsOn("openApiGenerate")
-    kotlinOptions.jvmTarget = "17"
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
-    testLogging {
-        exceptionFormat = FULL
-        events("passed", "skipped", "failed")
+    withType<KotlinCompile>().configureEach {
+        dependsOn("openApiGenerate")
+        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 
-    // For å øke hastigheten på build kan vi benytte disse metodene
-    maxParallelForks = Runtime.getRuntime().availableProcessors() / 2
-    reports.forEach { report -> report.required.value(false) }
+    withType<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>().configureEach {
+        generatorName.set("kotlin")
+        generateModelDocumentation.set(false)
+        inputSpec.set("$rootDir/src/main/resources/openapi/pets.json")
+        outputDir.set("$buildDir/generated")
+        globalProperties.set(
+            mapOf(
+                "models" to ""
+            )
+        )
+        configOptions.set(
+            mapOf(
+                "library" to "jvm-ktor",
+                "serializationLibrary" to "jackson"
+            )
+        )
+    }
+
+    withType<ShadowJar>().configureEach {
+        enabled = true
+        archiveFileName.set("app.jar")
+        manifest {
+            attributes["Main-Class"] = "no.nav.sokos.prosjektnavn.ApplicationKt"
+        }
+    }
+
+    ("jar") {
+        enabled = false
+    }
+
+
+    withType<Test>().configureEach {
+        useJUnitPlatform()
+        testLogging {
+            exceptionFormat = FULL
+            events("passed", "skipped", "failed")
+        }
+
+        // For å øke hastigheten på build kan vi benytte disse metodene
+        maxParallelForks = Runtime.getRuntime().availableProcessors() / 2
+        reports.forEach { report -> report.required.value(false) }
+    }
+
+    withType<Wrapper>().configureEach {
+        gradleVersion = "7.6"
+    }
 }
