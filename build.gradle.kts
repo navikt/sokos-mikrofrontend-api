@@ -77,7 +77,7 @@ tasks {
     withType<org.openapitools.generator.gradle.plugin.tasks.GenerateTask>().configureEach {
         generatorName.set("kotlin")
         generateModelDocumentation.set(false)
-        inputSpec.set("$rootDir/src/main/resources/openapi/pets.json")
+        inputSpec.set("$rootDir/specs/attestasjon.json")
         outputDir.set("$buildDir/generated")
         globalProperties.set(
             mapOf(
@@ -96,7 +96,7 @@ tasks {
         enabled = true
         archiveFileName.set("app.jar")
         manifest {
-            attributes["Main-Class"] = "no.nav.sokos.prosjektnavn.ApplicationKt"
+            attributes["Main-Class"] = "no.nav.sokos.oppdragproxy.BootstrapKt"
         }
     }
 
