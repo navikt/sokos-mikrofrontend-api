@@ -24,4 +24,3 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
           CLUSTER: dev-gcp
           RESOURCE: .nais/alerterator-dev.yaml
-          VARS: .nais/dev-gcp.json
