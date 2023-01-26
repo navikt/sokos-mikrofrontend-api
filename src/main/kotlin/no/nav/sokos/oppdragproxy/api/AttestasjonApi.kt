@@ -10,7 +10,7 @@ import org.openapitools.client.models.Attestasjon
 import org.openapitools.client.models.ModelApiResponse
 
 fun Application.attestasjonApi() {
-    
+
     routing {
         route("api") {
             get("attestasjon") {
