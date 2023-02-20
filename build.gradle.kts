@@ -14,7 +14,7 @@ plugins {
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.serialization") version "1.8.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.openapi.generator") version "6.2.1"
+    id("org.openapi.generator") version "6.4.0"
 }
 
 group = "no.nav.sokos.oppdragproxy"
