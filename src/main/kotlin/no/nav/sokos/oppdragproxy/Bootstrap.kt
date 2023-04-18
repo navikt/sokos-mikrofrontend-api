@@ -5,7 +5,7 @@ import io.ktor.server.engine.stop
 import io.ktor.server.netty.Netty
 import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
-import no.nav.sokos.oppdragproxy.api.attestasjonApi
+import no.nav.sokos.oppdragproxy.api.employeeApi
 import no.nav.sokos.oppdragproxy.api.metricsApi
 import no.nav.sokos.oppdragproxy.api.naisApi
 import no.nav.sokos.oppdragproxy.config.installCommonFeatures
@@ -26,7 +26,7 @@ class HttpServer(
         installCommonFeatures()
         metricsApi()
         naisApi({ applicationState.initialized }, { applicationState.running })
-        attestasjonApi()
+        employeeApi()
     }
 
     init {
