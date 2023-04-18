@@ -65,7 +65,7 @@ fun Application.installCommonFeatures() {
     }
     install(CORS) {
         allowCredentials = true
-        allowHost("okonomiportalen.dev.intern.nav.no", listOf("https"))
+        allowHost("okonomiportalen.intern.dev.nav.no", listOf("https"))
         allowMethod(HttpMethod.Get)
     }
 }
