@@ -38,7 +38,12 @@ spec:
   azure:
     application:
       enabled: true
-      allowAllusers: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: sokos-mikrofrontend-template
+          cluster: dev-gcp
+          namespace: okonomi
   env:
     - name: USE_AUTHENTICATION
       value: "true"
