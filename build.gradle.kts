@@ -12,7 +12,7 @@ val natpryceVersion = "1.6.10.0"
 val kotlinLoggingVersion = "3.0.4"
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.8.20"
     kotlin("plugin.serialization") version "1.8.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
