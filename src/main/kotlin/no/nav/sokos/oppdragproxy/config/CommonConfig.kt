@@ -30,7 +30,7 @@ import org.slf4j.event.Level
 private val log = KotlinLogging.logger {}
 const val APP_ENDPOINT = "sokos-oppdrag-proxy"
 
-fun Application.installCommonFeatures() {
+fun Application.commonConfig() {
     install(CallId) {
         header(HttpHeaders.XCorrelationId)
         generate { UUID.randomUUID().toString() }

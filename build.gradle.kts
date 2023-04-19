@@ -8,6 +8,7 @@ val logbackVersion = "1.4.5"
 val logstashVersion = "7.2"
 val jacksonVersion = "2.14.1"
 val prometheusVersion = "1.10.3"
+val natpryceVersion = "1.6.10.0"
 val kotlinLoggingVersion = "3.0.4"
 
 plugins {
@@ -36,6 +37,10 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("io.ktor:ktor-server-cors:$ktorVersion")
 
+    // Security
+    implementation("io.ktor:ktor-server-auth-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktorVersion")
+
     // Jackson
     implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
@@ -50,6 +55,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
+
+    // Config
+    implementation("com.natpryce:konfig:$natpryceVersion")
 
     // Test
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
