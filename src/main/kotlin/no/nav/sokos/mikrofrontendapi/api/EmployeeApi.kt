@@ -1,13 +1,13 @@
-package no.nav.sokos.oppdragproxy.api
+package no.nav.sokos.mikrofrontendapi.api
 
 import io.ktor.server.application.call
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
-import no.nav.sokos.oppdragproxy.config.AUTHENTICATION_NAME
-import no.nav.sokos.oppdragproxy.config.authenticate
-import no.nav.sokos.oppdragproxy.models.Employee
+import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
+import no.nav.sokos.mikrofrontendapi.config.authenticate
+import no.nav.sokos.mikrofrontendapi.models.Employee
 
 
 fun Routing.employeeApi(

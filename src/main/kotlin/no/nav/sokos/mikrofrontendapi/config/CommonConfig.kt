@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy.config
+package no.nav.sokos.mikrofrontendapi.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
@@ -24,11 +24,11 @@ import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
 import java.util.UUID
 import mu.KotlinLogging
-import no.nav.sokos.oppdragproxy.metrics.prometheusRegistry
+import no.nav.sokos.mikrofrontendapi.metrics.prometheusRegistry
 import org.slf4j.event.Level
 
 private val log = KotlinLogging.logger {}
-const val APP_ENDPOINT = "sokos-oppdrag-proxy"
+const val APP_ENDPOINT = "sokos-mikrofrontend-api"
 
 fun Application.commonConfig() {
     install(CallId) {

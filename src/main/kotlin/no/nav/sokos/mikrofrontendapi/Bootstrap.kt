@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy
+package no.nav.sokos.mikrofrontendapi
 
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
@@ -6,12 +6,12 @@ import io.ktor.server.engine.stop
 import io.ktor.server.netty.Netty
 import java.util.concurrent.TimeUnit
 import kotlin.properties.Delegates
-import no.nav.sokos.oppdragproxy.config.PropertiesConfig
-import no.nav.sokos.oppdragproxy.config.commonConfig
-import no.nav.sokos.oppdragproxy.config.configureRouting
-import no.nav.sokos.oppdragproxy.config.configureSecurity
-import no.nav.sokos.oppdragproxy.metrics.appStateReadyFalse
-import no.nav.sokos.oppdragproxy.metrics.appStateRunningFalse
+import no.nav.sokos.mikrofrontendapi.config.PropertiesConfig
+import no.nav.sokos.mikrofrontendapi.config.commonConfig
+import no.nav.sokos.mikrofrontendapi.config.configureRouting
+import no.nav.sokos.mikrofrontendapi.config.configureSecurity
+import no.nav.sokos.mikrofrontendapi.metrics.appStateReadyFalse
+import no.nav.sokos.mikrofrontendapi.metrics.appStateRunningFalse
 
 fun main() {
     val applicationState = ApplicationState()

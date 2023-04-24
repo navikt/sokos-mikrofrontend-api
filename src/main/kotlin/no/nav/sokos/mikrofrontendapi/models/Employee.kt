@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy.models
+package no.nav.sokos.mikrofrontendapi.models
 
 data class Employee(
     val id: Int,

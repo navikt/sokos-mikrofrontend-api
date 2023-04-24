@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy.config
+package no.nav.sokos.mikrofrontendapi.config
 import com.natpryce.konfig.ConfigurationMap
 import com.natpryce.konfig.ConfigurationProperties
 import com.natpryce.konfig.EnvironmentVariables
@@ -11,7 +11,7 @@ object PropertiesConfig {
 
     private val defaultProperties = ConfigurationMap(
         mapOf(
-            "NAIS_APP_NAME" to "sokos-oppdrag-proxy",
+            "NAIS_APP_NAME" to "sokos-mikrofrontend-api",
             "NAIS_NAMESPACE" to "okonomi"
         )
     )

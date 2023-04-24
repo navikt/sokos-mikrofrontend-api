@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy.api
+package no.nav.sokos.mikrofrontendapi.api
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call

@@ -1,13 +1,13 @@
-package no.nav.sokos.oppdragproxy.config
+package no.nav.sokos.mikrofrontendapi.config
 
 import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.routing
-import no.nav.sokos.oppdragproxy.ApplicationState
-import no.nav.sokos.oppdragproxy.api.employeeApi
-import no.nav.sokos.oppdragproxy.api.metricsApi
-import no.nav.sokos.oppdragproxy.api.naisApi
+import no.nav.sokos.mikrofrontendapi.ApplicationState
+import no.nav.sokos.mikrofrontendapi.api.employeeApi
+import no.nav.sokos.mikrofrontendapi.api.metricsApi
+import no.nav.sokos.mikrofrontendapi.api.naisApi
 
 
 fun Application.configureRouting(

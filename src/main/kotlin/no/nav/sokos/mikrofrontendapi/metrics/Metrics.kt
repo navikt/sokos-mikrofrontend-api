@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy.metrics
+package no.nav.sokos.mikrofrontendapi.metrics
 
 import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry

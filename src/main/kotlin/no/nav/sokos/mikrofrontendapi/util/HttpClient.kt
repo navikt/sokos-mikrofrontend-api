@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy.util
+package no.nav.sokos.mikrofrontendapi.util
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper

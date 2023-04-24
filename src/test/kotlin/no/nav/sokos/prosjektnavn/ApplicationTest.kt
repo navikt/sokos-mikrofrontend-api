@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy
+package no.nav.sokos.mikrofrontendapi
 
 import org.junit.Test
 

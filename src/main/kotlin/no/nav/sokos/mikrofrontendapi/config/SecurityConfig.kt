@@ -1,4 +1,4 @@
-package no.nav.sokos.oppdragproxy.config
+package no.nav.sokos.mikrofrontendapi.config
 
 import com.auth0.jwk.JwkProvider
 import com.auth0.jwk.JwkProviderBuilder
@@ -13,7 +13,7 @@ import mu.KotlinLogging
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.runBlocking
-import no.nav.sokos.oppdragproxy.util.httpClient
+import no.nav.sokos.mikrofrontendapi.util.httpClient
 
 private val log = KotlinLogging.logger {}
 const val AUTHENTICATION_NAME = "azureAd"

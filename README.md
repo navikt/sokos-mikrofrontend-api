@@ -1,4 +1,4 @@
-# oppdrag-proxy
+# sokos-mikrofrontend-api
 
 Test applikasjon
 

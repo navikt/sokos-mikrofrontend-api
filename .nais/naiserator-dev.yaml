@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: sokos-oppdrag-proxy
+  name: sokos-mikrofrontend-api
   namespace: okonomi
   labels:
     team: okonomi
@@ -31,7 +31,7 @@ spec:
       cpu: 80m
       memory: 1536Mi
   ingresses:
-    - https://sokos-oppdrag-proxy.intern.dev.nav.no
+    - https://sokos-mikrofrontend-api.intern.dev.nav.no
   prometheus:
     enabled: true
     path: /internal/metrics
@@ -41,7 +41,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: sokos-mikrofrontend-template
+        - application: sokos-op-fasade
           cluster: dev-gcp
           namespace: okonomi
   env:

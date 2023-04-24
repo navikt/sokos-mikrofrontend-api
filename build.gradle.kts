@@ -17,7 +17,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
-group = "no.nav.sokos.oppdragproxy"
+group = "no.nav.sokos"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -84,7 +84,7 @@ tasks {
         enabled = true
         archiveFileName.set("app.jar")
         manifest {
-            attributes["Main-Class"] = "no.nav.sokos.oppdragproxy.BootstrapKt"
+            attributes["Main-Class"] = "no.nav.sokos.mikrofrontendapi.BootstrapKt"
         }
     }
 

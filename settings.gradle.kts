@@ -1,1 +1,1 @@
-rootProject.name = "sokos-oppdrag-proxy"
+rootProject.name = "sokos-mikrofrontend-api"
