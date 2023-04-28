@@ -41,6 +41,8 @@ fun Application.configureSecurity(
                             "Auth: Missing audience in token"
                         }
                         require(credential.payload.audience.contains(azureAdConfig.clientId)) {
+                            log.info { "AUDIENCE :: " + credential.payload.audience }
+                            log.info { "azureAdConfig.clientId :: " + azureAdConfig.clientId }
                             log.info("Auth: Valid audience not found in claims")
                             "Auth: Valid audience not found in claims"
                         }
