@@ -16,13 +16,12 @@ import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
-import io.ktor.server.request.path
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
-import java.util.UUID
+import java.util.*
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.metrics.prometheusRegistry
 import org.slf4j.event.Level
@@ -40,7 +39,6 @@ fun Application.commonConfig() {
         logger = log
         level = Level.INFO
         callIdMdc(HttpHeaders.XCorrelationId)
-        filter { call -> call.request.path().startsWith("/api/$APP_ENDPOINT") }
         disableDefaultColors()
     }
     install(ContentNegotiation) {
