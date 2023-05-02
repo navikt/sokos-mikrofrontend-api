@@ -67,5 +67,6 @@ fun Application.commonConfig() {
         allowCredentials = true
         allowHost("okonomiportalen.intern.dev.nav.no", listOf("https"))
         allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
     }
 }
