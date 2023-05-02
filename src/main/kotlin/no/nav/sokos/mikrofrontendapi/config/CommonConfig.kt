@@ -68,5 +68,7 @@ fun Application.commonConfig() {
         allowHost("okonomiportalen.intern.dev.nav.no", listOf("https"))
         allowMethod(HttpMethod.Get)
         allowMethod(HttpMethod.Post)
+        allowHeader(HttpHeaders.Accept)
+        allowHeader(HttpHeaders.ContentType)
     }
 }
