@@ -63,6 +63,7 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                     call.respond(HttpStatusCode.NoContent)
                 }
 
+                logger.info("Returnerer følgende data: $posteringsresultat")
                 call.respond(HttpStatusCode.OK, posteringsresultat)
             }
         }
