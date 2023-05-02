@@ -23,7 +23,7 @@ fun main() {
 class HttpServer(
     private val applicationState: ApplicationState,
     private val applicationConfiguration: PropertiesConfig.Configuration,
-    port: Int = 8080,
+    port: Int = 9500,
 ) {
     init {
         Runtime.getRuntime().addShutdownHook(Thread {
