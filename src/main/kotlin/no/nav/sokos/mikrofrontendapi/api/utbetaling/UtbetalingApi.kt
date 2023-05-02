@@ -64,10 +64,11 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
 
                 if (posteringsresultat.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent)
+                } else {
+                    logger.info("Returnerer følgende data: $posteringsresultat")
+                    call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
                 }
 
-                logger.info("Returnerer følgende data: $posteringsresultat")
-                call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
             }
         }
     }
