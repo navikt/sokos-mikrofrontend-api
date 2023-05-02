@@ -13,6 +13,8 @@ import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Aktoer
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
+import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
+import no.nav.sokos.mikrofrontendapi.config.authenticate
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 
@@ -46,21 +48,23 @@ object UtbetalingApi {
 
 }
 
-fun Routing.ruteForUtbetaling() {
-    route("/api/utbetaling") {
+fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
+    authenticate(useAuthentication, AUTHENTICATION_NAME) {
+        route("/api/utbetaling") {
 
-        post("/hentPostering") {
-            val posteringSøkeData: PosteringSøkeData = call.receive()
-            logger.info("Henter postering for $posteringSøkeData")
+            post("/hentPostering") {
+                val posteringSøkeData: PosteringSøkeData = call.receive()
+                logger.info("Henter postering for $posteringSøkeData")
 
-            val posteringsresultat =
-                UtbetalingApi.posteringer.filter { it.rettighetshaver.ident == posteringSøkeData.rettighetshaver }
+                val posteringsresultat =
+                    UtbetalingApi.posteringer.filter { it.rettighetshaver.ident == posteringSøkeData.rettighetshaver }
 
-            if (posteringsresultat.isEmpty()) {
-                call.respond(HttpStatusCode.NoContent)
+                if (posteringsresultat.isEmpty()) {
+                    call.respond(HttpStatusCode.NoContent)
+                }
+
+                call.respond(HttpStatusCode.OK, posteringsresultat)
             }
-
-            call.respond(HttpStatusCode.OK, posteringsresultat)
         }
     }
 }

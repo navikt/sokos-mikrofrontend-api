@@ -19,7 +19,7 @@ fun Application.configureRouting(
         naisApi({ applicationState.initialized }, { applicationState.running })
         metricsApi()
         employeeApi(useAuthentication)
-        ruteForUtbetaling()
+        ruteForUtbetaling(useAuthentication)
     }
 }
 
