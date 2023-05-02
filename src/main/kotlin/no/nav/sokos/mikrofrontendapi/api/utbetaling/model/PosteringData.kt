@@ -8,7 +8,7 @@ data class PosteringData(
     val rettighetshaver: Aktoer,
     val posteringsdato: LocalDate,
     val utbetalingsdato: LocalDate,
-    val utbetalingNettobeløp: BigDecimal,
+    val utbetalingNettobeloep: BigDecimal,
     val bilagsnummer: String,
     val regnskapskonto: String,
     val ytelsesperiode: Periode,
