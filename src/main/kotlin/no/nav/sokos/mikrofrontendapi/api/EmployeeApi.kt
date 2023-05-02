@@ -20,12 +20,12 @@ fun Routing.employeeApi(
                 val employee1 = Employee(
                     1,
                     "Ola Nordmann",
-                    "Systemutvikler"
+                    "Prosjektleder"
                 )
                 val employee2 = Employee(
                     2,
                     "Kari Nordmann",
-                    "Prosjektleder"
+                    "Tech lead"
                 )
                 call.respond(listOf(employee1, employee2))
             }
