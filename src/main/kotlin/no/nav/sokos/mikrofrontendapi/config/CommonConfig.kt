@@ -17,6 +17,7 @@ import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.request.path
+import io.ktor.server.plugins.statuspages.*
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
@@ -42,6 +43,9 @@ fun Application.commonConfig() {
         callIdMdc(HttpHeaders.XCorrelationId)
         filter { call -> call.request.path().startsWith("/api") }
         disableDefaultColors()
+    }
+    install(StatusPages) {
+        exceptionHandler()
     }
     install(ContentNegotiation) {
         jackson {
