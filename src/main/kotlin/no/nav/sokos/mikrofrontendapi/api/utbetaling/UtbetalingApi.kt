@@ -60,7 +60,7 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                 val posteringsresultat =
                     UtbetalingApi
                         .posteringer
-                        //.filter { it.rettighetshaver.ident == posteringSøkeData.rettighetshaver }
+                        .filter { it.rettighetshaver.ident == posteringSøkeData.rettighetshaver }
 
                 if (posteringsresultat.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent)
