@@ -3,6 +3,6 @@ package no.nav.sokos.utbetaldata.api.utbetaling.entitet
 import java.time.LocalDate
 
 data class Periode(
-    val fom: LocalDate,
-    val tom: LocalDate,
+    val fomDato: LocalDate,
+    val tomDato: LocalDate,
 )
