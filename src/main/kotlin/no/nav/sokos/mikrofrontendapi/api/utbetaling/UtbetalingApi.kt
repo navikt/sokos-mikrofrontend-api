@@ -11,6 +11,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Aktoer
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
@@ -57,14 +58,16 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                 logger.info("Henter postering for $posteringSøkeData")
 
                 val posteringsresultat =
-                    UtbetalingApi.posteringer.filter { it.rettighetshaver.ident == posteringSøkeData.rettighetshaver }
+                    UtbetalingApi
+                        .posteringer
+                        //.filter { it.rettighetshaver.ident == posteringSøkeData.rettighetshaver }
 
                 if (posteringsresultat.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent)
                 }
 
                 logger.info("Returnerer følgende data: $posteringsresultat")
-                call.respond(HttpStatusCode.OK, posteringsresultat)
+                call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
             }
         }
     }
