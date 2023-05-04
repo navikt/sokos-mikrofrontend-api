@@ -1,10 +1,10 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling.model
 
-import no.nav.sokos.mikrofrontendapi.util.JsonMapper
+import no.nav.sokos.mikrofrontendapi.util.jsonMapper
 
 data class HentPosteringResponse(val utbetalinger: List<PosteringData>) {
 
     fun tilJson(): String {
-        return JsonMapper.objectMapper.writeValueAsString(this)
+        return jsonMapper.writeValueAsString(this)
     }
 }

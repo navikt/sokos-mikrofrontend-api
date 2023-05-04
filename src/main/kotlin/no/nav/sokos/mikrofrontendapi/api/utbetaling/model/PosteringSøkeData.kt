@@ -1,6 +1,6 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling.model
 
-import no.nav.sokos.mikrofrontendapi.util.JsonMapper
+import no.nav.sokos.mikrofrontendapi.util.jsonMapper
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 
@@ -15,7 +15,7 @@ data class PosteringSøkeData(
     val kontonummerTil: String?
 ) {
     fun tilJson(): String {
-        return JsonMapper.objectMapper.writeValueAsString(this)
+        return jsonMapper.writeValueAsString(this)
     }
 
 }
