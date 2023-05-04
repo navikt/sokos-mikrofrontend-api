@@ -55,7 +55,7 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
 
             post("/hentPostering") {
                 val posteringSøkeData: PosteringSøkeData = call.receive()
-                logger.info("Henter postering for $posteringSøkeData")
+                logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
                 val posteringsresultat =
                     UtbetalingApi
@@ -66,6 +66,8 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                     call.respond(HttpStatusCode.NoContent)
                 } else {
                     logger.info("Returnerer følgende data: $posteringsresultat")
+                    val response =  HentPosteringResponse(posteringsresultat)
+                    logger.info("Returnerer følgende response: ${response.tilJson()}")
                     call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
                 }
 
