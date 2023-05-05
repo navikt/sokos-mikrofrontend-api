@@ -24,6 +24,7 @@ private val logger = KotlinLogging.logger {}
 object UtbetalingApi {
     val posteringer = listOf(
         PosteringData(
+            beregningsId = "1111",
             rettighetshaver = Aktoer(ident = "012345678901", navn = "Testperson 1", aktoertype = Aktoertype.PERSON),
             posteringsdato = LocalDate.of(2023, 1, 3),
             utbetalingsdato = LocalDate.of(2023, 1, 4),
@@ -35,6 +36,7 @@ object UtbetalingApi {
             kostnadssted = "9710"
         ),
         PosteringData(
+            beregningsId = "1112",
             rettighetshaver = Aktoer(ident = "012345678901", navn = "Testperson 1", aktoertype = Aktoertype.PERSON),
             posteringsdato = LocalDate.of(2023, 1, 15),
             utbetalingsdato = LocalDate.of(2023, 1, 20),

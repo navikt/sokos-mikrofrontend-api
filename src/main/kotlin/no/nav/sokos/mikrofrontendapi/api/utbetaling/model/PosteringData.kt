@@ -5,6 +5,7 @@ import java.time.LocalDate
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 
 data class PosteringData(
+    val beregningsId: String,
     val rettighetshaver: Aktoer,
     val posteringsdato: LocalDate,
     val utbetalingsdato: LocalDate,
