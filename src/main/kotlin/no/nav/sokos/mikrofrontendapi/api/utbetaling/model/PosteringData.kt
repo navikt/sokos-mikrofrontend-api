@@ -10,7 +10,7 @@ data class PosteringData(
     val utbetalingsdato: LocalDate,
     val utbetalingNettobeloep: BigDecimal,
     val bilagsnummer: String,
-    val regnskapskonto: String,
+    val posteringskonto: String,
     val ytelsesperiode: Periode,
     val ansvarssted: String,
     val kostnadssted: String

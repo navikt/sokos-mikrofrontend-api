@@ -29,7 +29,7 @@ object UtbetalingApi {
             utbetalingsdato = LocalDate.of(2023, 1, 4),
             utbetalingNettobeloep = BigDecimal("800.00"),
             bilagsnummer = "726909203",
-            regnskapskonto = "1234567",
+            posteringskonto = "1234567",
             ytelsesperiode = Periode(LocalDate.of(2022, 12, 12), LocalDate.of(2022, 12, 19)),
             ansvarssted = "1218",
             kostnadssted = "9710"
@@ -40,7 +40,7 @@ object UtbetalingApi {
             utbetalingsdato = LocalDate.of(2023, 1, 20),
             utbetalingNettobeloep = BigDecimal("800.00"),
             bilagsnummer = "726909203",
-            regnskapskonto = "1234567",
+            posteringskonto = "1234567",
             ytelsesperiode = Periode(LocalDate.of(2022, 12, 19), LocalDate.of(2022, 12, 25)),
             ansvarssted = "1218",
             kostnadssted = "9710"
