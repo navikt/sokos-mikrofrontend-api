@@ -25,7 +25,7 @@ object UtbetalingApi {
     val posteringer = listOf(
         PosteringData(
             beregningsId = "1111",
-            rettighetshaver = Aktoer(ident = "012345678901", navn = "Testperson 1", aktoertype = Aktoertype.PERSON),
+            rettighetshaver = Aktoer(ident = "01234567890", navn = "Testperson 1", aktoertype = Aktoertype.PERSON),
             posteringsdato = LocalDate.of(2023, 1, 3),
             utbetalingsdato = LocalDate.of(2023, 1, 4),
             utbetalingNettobeloep = BigDecimal("800.00"),
@@ -37,7 +37,7 @@ object UtbetalingApi {
         ),
         PosteringData(
             beregningsId = "1112",
-            rettighetshaver = Aktoer(ident = "012345678901", navn = "Testperson 1", aktoertype = Aktoertype.PERSON),
+            rettighetshaver = Aktoer(ident = "01234567890", navn = "Testperson 1", aktoertype = Aktoertype.PERSON),
             posteringsdato = LocalDate.of(2023, 1, 15),
             utbetalingsdato = LocalDate.of(2023, 1, 20),
             utbetalingNettobeloep = BigDecimal("800.00"),
