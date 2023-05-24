@@ -7,8 +7,8 @@ import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 data class PosteringSøkeData(
     val rettighetshaver: String?,
     val utbetalingsmottaker: String?,
-    val periodetype: Periodetype?,
-    val periode: Periode?,
+    val periodetype: Periodetype,
+    val periode: Periode,
     val ansvarssted: String?,
     val kostnadssted: String?,
     val posteringskontoFra: String?,
