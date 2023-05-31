@@ -8,11 +8,11 @@ data class PosteringData(
     val beregningsId: String,
     val rettighetshaver: Aktoer,
     val posteringsdato: LocalDate,
-    val utbetalingsdato: LocalDate,
+    val utbetalingsdato: LocalDate?,
     val posteringsbeloep: BigDecimal,
     val bilagsnummer: String,
     val posteringskonto: String,
-    val ytelsesperiode: Periode,
+    val ytelsesperiode: Periode?,
     val ansvarssted: String,
     val kostnadssted: String,
     val behandlingskode: Behandlingskode,
@@ -20,9 +20,11 @@ data class PosteringData(
     val utbetalingsKontonummer: String,
     val utbetalingsKontotype: String,
     val status: PosteringStatus,
-    val ytelsegrad: Int,
+    val ytelsegrad: Int?,
     val ytelsestype: String,
-    val forsystemPosteringsdato: LocalDate,
-    )
+    val forsystemPosteringsdato: LocalDate?,
+    ) {
+    companion object
+}
 
 
