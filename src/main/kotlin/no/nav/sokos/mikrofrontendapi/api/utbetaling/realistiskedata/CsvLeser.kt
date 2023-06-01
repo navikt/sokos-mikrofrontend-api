@@ -17,9 +17,7 @@ import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 
 private val logger = KotlinLogging.logger { }
 
-class CsvLeser(
-    private val filstiInn: String,
-) {
+class CsvLeser() {
 
     fun lesFil(filnavn: String): List<PosteringData> {
         return reader(filnavn)
@@ -31,12 +29,11 @@ class CsvLeser(
 
     private fun reader(filnavn: String): BufferedReader {
         logger.info { "Skal forsøke å lese fil $filnavn" }
-        val reader = this::class.java.getResourceAsStream(filnavn)?.bufferedReader(Charsets.ISO_8859_1) ?: throw RuntimeException("Fant ikke filen $filnavn")
+        val reader = this::class.java.getResourceAsStream(filnavn)
+            ?.bufferedReader(Charsets.ISO_8859_1) ?: throw RuntimeException("Fant ikke filen $filnavn")
 
-        logger.info { "Har lest fil $filnavn" }
         return reader
     }
-
 }
 
 val datoformat: DateTimeFormatter = DateTimeFormatter.ofPattern(/* pattern = */ "dd/MM/yyyy")

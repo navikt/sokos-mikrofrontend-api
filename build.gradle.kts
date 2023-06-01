@@ -66,13 +66,6 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 }
 
-sourceSets {
-    main {
-        java {
-            srcDirs("$buildDir/generated/src/main/kotlin")
-        }
-    }
-}
 
 tasks {
 
