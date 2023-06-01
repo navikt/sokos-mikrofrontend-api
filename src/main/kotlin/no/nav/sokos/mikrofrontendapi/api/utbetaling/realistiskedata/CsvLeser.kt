@@ -41,7 +41,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
     val kolonner = csvRad.split(";")
     return PosteringData(
         beregningsId = "1000",
-        rettighetshaver = Aktoer(Aktoertype.PERSON, kolonner[0], navn = null),
+        rettighetshaver = Aktoer(Aktoertype.PERSON, kolonner[0], "Navn Navnesen"),
         posteringsdato = parseDato(kolonner[5]),
         utbetalingsdato = parseValgfriDato(kolonner[15]),
         posteringsbeloep = parseBigDecimal(kolonner[8]),
