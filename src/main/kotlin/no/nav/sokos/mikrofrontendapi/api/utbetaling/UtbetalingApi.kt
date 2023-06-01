@@ -17,7 +17,7 @@ import no.nav.sokos.mikrofrontendapi.config.authenticate
 private val logger = KotlinLogging.logger {}
 
 object UtbetalingApi {
-    val posteringer = CsvLeser("src/test/resources").lesFil("mockposteringer.csv")
+    val posteringer = CsvLeser("src/main/resources/utbetalingapi").lesFil("mockposteringer.csv")
 }
 
 fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
