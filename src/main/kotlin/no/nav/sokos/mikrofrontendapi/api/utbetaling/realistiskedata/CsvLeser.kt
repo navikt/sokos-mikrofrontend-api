@@ -14,7 +14,7 @@ class CsvLeser(
     private val filstiInn: String,
 ) {
 
-    fun lesFil(filnavn: String): MutableList<PosteringData> {
+    fun lesFil(filnavn: String): List<PosteringData> {
         return reader(filnavn)
             .lines()
             .skip(1)
@@ -77,8 +77,3 @@ fun valgfriDato(valgfriKolonne: String?): LocalDate? {
 
 private fun lesValgfriKolonne(s: String) = if (s.isBlank()) null else s.trim()
 
-fun main() {
-    val list = CsvLeser("src/test/resources").lesFil("data.csv")
-
-    println(HentPosteringResponse(list).tilJson())
-}
