@@ -1,11 +1,10 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata
 
-import mu.KotlinLogging
 import java.io.BufferedReader
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Aktoer
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingskode
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.DebetKredit
@@ -43,12 +42,12 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
     return PosteringData(
         beregningsId = "1000",
         rettighetshaver = Aktoer(Aktoertype.PERSON, kolonner[0], navn = null),
-        posteringsdato = LocalDate.parse(kolonner[5], datoformat),
-        utbetalingsdato = valgfriDato(lesValgfriKolonne(kolonner[15])),
+        posteringsdato = parseDato(kolonner[5]),
+        utbetalingsdato = parseValgfriDato(kolonner[15]),
         posteringsbeloep = parseBigDecimal(kolonner[8]),
         bilagsnummer = (kolonner[6] + kolonner[7]).replace(" ", ""),
         posteringskonto = kolonner[1],
-        ytelsesperiode = valgfriDato(lesValgfriKolonne(kolonner[12]))?.let { Periode(it, parseDato(kolonner[13])) },
+        ytelsesperiode = parseValgfriDato(kolonner[12])?.let { Periode(it, parseDato(kolonner[13])) },
         ansvarssted = kolonner[4],
         kostnadssted = kolonner[3],
         debetKredit = DebetKredit.parse(kolonner[9]),
@@ -58,30 +57,28 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         status = PosteringStatus.parse(kolonner[11]),
         ytelsestype = "Eivind sjekker dette",
         ytelsegrad = lesValgfriKolonne(kolonner[14])?.toInt(),
-        forsystemPosteringsdato = valgfriDato(lesValgfriKolonne(kolonner[16])),
+        forsystemPosteringsdato = parseValgfriDato(kolonner[16]),
     )
 
 }
 
-fun parseBigDecimal(s: String): BigDecimal {
+private fun parseBigDecimal(s: String): BigDecimal {
     return BigDecimal(s.replace(" ", "").replace(",", "."))
 }
 
-fun parseDato(datoString: String): LocalDate {
+private fun parseDato(datoString: String): LocalDate {
     return LocalDate.parse(datoString, datoformat)
 }
 
-fun valgfriDato(valgfriKolonne: String?): LocalDate? {
-    val dt: LocalDate? = valgfriKolonne?.let { s ->
-        val localDate = try {
-            LocalDate.parse(s, datoformat)
-        } catch (e: DateTimeParseException) {
-            throw RuntimeException("Greide ikke å parse $s som en dato", e)
-        }
-        localDate
+private fun parseValgfriDato(valgfriKolonne: String?): LocalDate? {
+    val verdi = lesValgfriKolonne(valgfriKolonne)
+
+    if (verdi == null) {
+        return null
+    } else {
+        return parseDato(verdi)
     }
-    return dt
 }
 
-private fun lesValgfriKolonne(s: String) = if (s.isBlank()) null else s.trim()
+private fun lesValgfriKolonne(s: String?) = if (s.isNullOrBlank()) null else s.trim()
 
