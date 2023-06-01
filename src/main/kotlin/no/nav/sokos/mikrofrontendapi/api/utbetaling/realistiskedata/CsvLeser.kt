@@ -1,14 +1,17 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata
 
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.*
-import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
-import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 import java.io.BufferedReader
-import java.io.File
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Aktoer
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingskode
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.DebetKredit
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringStatus
+import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
+import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 
 class CsvLeser(
     private val filstiInn: String,
@@ -23,7 +26,10 @@ class CsvLeser(
     }
 
     private fun reader(filnavn: String): BufferedReader {
-        return File("$filstiInn/$filnavn").inputStream().bufferedReader(Charsets.ISO_8859_1)
+
+        val reader = this::class.java.getResourceAsStream(filnavn)?.bufferedReader(Charsets.ISO_8859_1) ?: throw RuntimeException("Fant ikke filen $filnavn")
+
+        return reader
     }
 
 }
