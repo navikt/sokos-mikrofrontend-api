@@ -63,7 +63,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
 }
 
 private fun parseBigDecimal(s: String): BigDecimal {
-    return BigDecimal(s.replace(" ", "").replace(",", "."))
+    return BigDecimal(s.replace(" ", "").replace(",", ".")).setScale(2)
 }
 
 private fun parseDato(datoString: String): LocalDate {
