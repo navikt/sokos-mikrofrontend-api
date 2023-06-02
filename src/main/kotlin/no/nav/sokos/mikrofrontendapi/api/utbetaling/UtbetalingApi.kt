@@ -13,6 +13,7 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.CsvLeser
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
 import no.nav.sokos.mikrofrontendapi.config.authenticate
+import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 
 private val logger = KotlinLogging.logger {}
 
@@ -28,11 +29,19 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                 val posteringSøkeData: PosteringSøkeData = call.receive()
                 logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
+                val posteringskontoTil = posteringSøkeData.posteringskontoTil ?: posteringSøkeData.posteringskontoFra
                 val posteringsresultat =
                     UtbetalingApi
                         .posteringer
-                        .filter { it.rettighetshaver.ident == posteringSøkeData.rettighetshaver }
-
+                        .filter { posteringSøkeData.rettighetshaver?.equals(it.rettighetshaver.ident) ?: true }
+                        .filter { posteringSøkeData.utbetalingsmottaker?.equals(it.rettighetshaver.ident) ?: true }
+                        .filter { posteringSøkeData.ansvarssted?.equals(it.ansvarssted) ?: true }
+                        .filter { posteringSøkeData.posteringskontoFra == null || posteringSøkeData.posteringskontoFra >= it.posteringskonto }
+                        .filter { posteringskontoTil == null || posteringskontoTil <= it.posteringskonto }
+                        .filter { it.ytelsesperiode == null || (posteringSøkeData.periodetype == Periodetype.YTELSESPERIODE &&  !it.ytelsesperiode.fomDato.isBefore(posteringSøkeData.periode.fomDato)) }
+                        .filter { it.ytelsesperiode == null || (posteringSøkeData.periodetype == Periodetype.YTELSESPERIODE &&  !it.ytelsesperiode.tomDato.isAfter(posteringSøkeData.periode.tomDato)) }
+                        .filter { it.utbetalingsdato == null || (posteringSøkeData.periodetype == Periodetype.UTBETALINGSPERIODE && !it.utbetalingsdato.isBefore(posteringSøkeData.periode.fomDato)) }
+                        .filter { it.utbetalingsdato == null || (posteringSøkeData.periodetype == Periodetype.UTBETALINGSPERIODE && !it.utbetalingsdato.isAfter(posteringSøkeData.periode.tomDato)) }
                 if (posteringsresultat.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent)
                 } else {

@@ -10,7 +10,6 @@ data class PosteringSøkeData(
     val periodetype: Periodetype,
     val periode: Periode,
     val ansvarssted: String?,
-    val kostnadssted: String?,
     val posteringskontoFra: String?,
     val posteringskontoTil: String?
 ) {

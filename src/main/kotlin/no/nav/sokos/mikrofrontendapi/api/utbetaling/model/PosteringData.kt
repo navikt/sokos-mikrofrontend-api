@@ -23,6 +23,7 @@ data class PosteringData(
     val ytelsegrad: Int?,
     val ytelsestype: String,
     val forsystemPosteringsdato: LocalDate?,
+    val utbetalingsmottaker: Aktoer
     ) {
     companion object
 }
