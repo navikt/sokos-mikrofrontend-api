@@ -38,8 +38,8 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                         .filter { posteringSøkeData.ansvarssted?.equals(it.ansvarssted) ?: true }
                         .filter { posteringSøkeData.posteringskontoFra == null || posteringSøkeData.posteringskontoFra >= it.posteringskonto }
                         .filter { posteringskontoTil == null || posteringskontoTil <= it.posteringskonto }
-                        .filter { it.ytelsesperiode == null || (posteringSøkeData.periodetype == Periodetype.YTELSESPERIODE &&  !it.ytelsesperiode.fomDato.isBefore(posteringSøkeData.periode.fomDato)) }
-                        .filter { it.ytelsesperiode == null || (posteringSøkeData.periodetype == Periodetype.YTELSESPERIODE &&  !it.ytelsesperiode.tomDato.isAfter(posteringSøkeData.periode.tomDato)) }
+                        .filter { it.ytelsesperiode == null ||  posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.fomDato.isBefore(posteringSøkeData.periode.fomDato) }
+                        .filter { it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.tomDato.isAfter(posteringSøkeData.periode.tomDato) }
                         .filter { it.utbetalingsdato == null || (posteringSøkeData.periodetype == Periodetype.UTBETALINGSPERIODE && !it.utbetalingsdato.isBefore(posteringSøkeData.periode.fomDato)) }
                         .filter { it.utbetalingsdato == null || (posteringSøkeData.periodetype == Periodetype.UTBETALINGSPERIODE && !it.utbetalingsdato.isAfter(posteringSøkeData.periode.tomDato)) }
                 if (posteringsresultat.isEmpty()) {
