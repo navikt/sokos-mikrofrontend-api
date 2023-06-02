@@ -36,8 +36,8 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                         .filter { posteringSøkeData.rettighetshaver?.equals(it.rettighetshaver.ident) ?: true }
                         .filter { posteringSøkeData.utbetalingsmottaker?.equals(it.rettighetshaver.ident) ?: true }
                         .filter { posteringSøkeData.ansvarssted?.equals(it.ansvarssted) ?: true }
-                        .filter { posteringSøkeData.posteringskontoFra == null || posteringSøkeData.posteringskontoFra >= it.posteringskonto }
-                        .filter { posteringskontoTil == null || posteringskontoTil <= it.posteringskonto }
+                        .filter { posteringSøkeData.posteringskontoFra == null || it.posteringskonto >= posteringSøkeData.posteringskontoFra }
+                        .filter { posteringskontoTil == null || it.posteringskonto  <= posteringskontoTil }
                         .filter { it.ytelsesperiode == null ||  posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.fomDato.isBefore(posteringSøkeData.periode.fomDato) }
                         .filter { it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.tomDato.isAfter(posteringSøkeData.periode.tomDato) }
                         .filter { it.utbetalingsdato == null || (posteringSøkeData.periodetype == Periodetype.UTBETALINGSPERIODE && !it.utbetalingsdato.isBefore(posteringSøkeData.periode.fomDato)) }
