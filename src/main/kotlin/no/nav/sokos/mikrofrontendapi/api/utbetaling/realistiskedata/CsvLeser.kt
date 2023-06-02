@@ -58,6 +58,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         ytelsestype = "Eivind sjekker dette",
         ytelsegrad = lesValgfriKolonne(kolonner[14])?.toInt(),
         forsystemPosteringsdato = parseValgfriDato(kolonner[16]),
+        utbetalingsmottaker = Aktoer(Aktoertype.PERSON, kolonner[0], "Navn Navnesen")
     )
 
 }
