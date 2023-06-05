@@ -4,8 +4,8 @@ import java.lang.IllegalArgumentException
 
 enum class PosteringStatus(val kode: String, val beskrivelse: String) {
     UTBETALT_AV_BANK("18", "Utbetalt av bank"),
-    HØRE_MED_GEIR_10("10", "Mottatt kontofører"),
-    HØRE_MED_GEIR_12("12", "Sendt kontofører"),
+    MOTTATT_KONTOFØRER("10", "Mottatt kontofører"),
+    SENDT_KONTOFØRER("12", "Sendt kontofører"),
     MOTTAT_FRA_FORSYSTEM("9", "Mottatt fra forsystem");
 
     companion object {
