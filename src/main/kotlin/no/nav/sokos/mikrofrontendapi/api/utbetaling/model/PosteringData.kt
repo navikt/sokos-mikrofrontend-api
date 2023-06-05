@@ -19,7 +19,7 @@ data class PosteringData(
     val debetKredit: DebetKredit,
     val utbetalingsKontonummer: String,
     val utbetalingsKontotype: String,
-    val status: PosteringStatus,
+    val status: Status,
     val ytelsegrad: Int?,
     val ytelsestype: String,
     val forsystemPosteringsdato: LocalDate?,
@@ -28,4 +28,4 @@ data class PosteringData(
     companion object
 }
 
-
+data class Status(val kode: String, val beskrivelse: String)
