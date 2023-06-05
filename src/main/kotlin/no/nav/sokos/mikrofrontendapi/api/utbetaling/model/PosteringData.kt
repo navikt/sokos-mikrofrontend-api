@@ -15,7 +15,7 @@ data class PosteringData(
     val ytelsesperiode: Periode?,
     val ansvarssted: String,
     val kostnadssted: String,
-    val behandlingskode: Behandlingskode,
+    val behandlingsstatus: Behandlingsstatus,
     val debetKredit: DebetKredit,
     val utbetalingsKontonummer: String,
     val utbetalingsKontotype: String,
@@ -29,3 +29,5 @@ data class PosteringData(
 }
 
 data class Status(val kode: String, val beskrivelse: String)
+
+data class Behandlingsstatus(val kode: String, val beskrivelse: String)

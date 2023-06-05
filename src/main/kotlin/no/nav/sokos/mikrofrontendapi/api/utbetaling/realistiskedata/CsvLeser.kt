@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Aktoer
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingskode
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingsstatus
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.DebetKredit
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringStatus
@@ -52,7 +53,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         ansvarssted = kolonner[4],
         kostnadssted = kolonner[3],
         debetKredit = DebetKredit.parse(kolonner[9]),
-        behandlingskode = Behandlingskode.parse(kolonner[2]),
+        behandlingsstatus = (Behandlingsstatus(kode = kolonner[2], beskrivelse = Behandlingskode.parse(kolonner[2]).beskrivelse)),
         utbetalingsKontotype = "Bankkonto",
         utbetalingsKontonummer = kolonner[10],
         status = Status(kode = kolonner[11], beskrivelse = PosteringStatus.parse(kolonner[11]).beskrivelse),
