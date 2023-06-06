@@ -16,7 +16,7 @@ data class PosteringData(
     val ansvarssted: String,
     val kostnadssted: String,
     val behandlingsstatus: Behandlingsstatus,
-    val debetKredit: DebetKredit,
+    val debetKredit: String,
     val utbetalingsKontonummer: String,
     val utbetalingsKontotype: String,
     val status: Status,

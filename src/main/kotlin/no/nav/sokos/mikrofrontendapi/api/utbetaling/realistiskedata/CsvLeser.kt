@@ -52,7 +52,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         ytelsesperiode = parseValgfriDato(kolonner[12])?.let { Periode(it, parseDato(kolonner[13])) },
         ansvarssted = kolonner[4],
         kostnadssted = kolonner[3],
-        debetKredit = DebetKredit.parse(kolonner[9]),
+        debetKredit = DebetKredit.parse(kolonner[9]).kode,
         behandlingsstatus = (Behandlingsstatus(kode = kolonner[2], beskrivelse = Behandlingskode.parse(kolonner[2]).beskrivelse)),
         utbetalingsKontotype = "Bankkonto",
         utbetalingsKontonummer = kolonner[10],
