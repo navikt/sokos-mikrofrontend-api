@@ -31,7 +31,7 @@ class CsvLeser() {
     private fun reader(filnavn: String): BufferedReader {
         logger.info { "Skal forsøke å lese fil $filnavn" }
         val reader = this::class.java.getResourceAsStream(filnavn)
-            ?.bufferedReader(Charsets.ISO_8859_1) ?: throw RuntimeException("Fant ikke filen $filnavn")
+            ?.bufferedReader(Charsets.UTF_8) ?: throw RuntimeException("Fant ikke filen $filnavn")
 
         return reader
     }
@@ -57,7 +57,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         utbetalingsKontotype = "Bankkonto",
         utbetalingsKontonummer = kolonner[10],
         posteringsstatus = Posteringsstatus(kode = kolonner[11], beskrivelse = PosteringStatus.parse(kolonner[11]).beskrivelse),
-        ytelsestype = "Eivind sjekker dette",
+        ytelsestype = kolonner[19],
         ytelsegrad = lesValgfriKolonne(kolonner[14])?.toInt(),
         forsystemPosteringsdato = parseValgfriDato(kolonner[16]),
         utbetalingsmottaker = Aktoer(Aktoertype.PERSON, kolonner[0], "Navn Navnesen")
