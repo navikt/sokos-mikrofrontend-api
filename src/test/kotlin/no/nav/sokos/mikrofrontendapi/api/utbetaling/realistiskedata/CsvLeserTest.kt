@@ -8,6 +8,6 @@ internal class CsvLeserTest {
     @Test
     fun lesFil() {
         val posteringer = CsvLeser().lesFil("/mockposteringer.csv")
-        println( HentPosteringResponse(posteringer).tilJson())
+        println( HentPosteringResponse(posteringer.filter{it.rettighetshaver.ident == "00000000001"}).tilJson())
     }
 }

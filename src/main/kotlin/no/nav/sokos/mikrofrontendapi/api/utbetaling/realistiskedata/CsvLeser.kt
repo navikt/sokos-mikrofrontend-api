@@ -11,7 +11,7 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingsstatus
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.DebetKredit
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringStatus
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Status
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringsstatus
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 
@@ -56,7 +56,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         behandlingsstatus = (Behandlingsstatus(kode = kolonner[2], beskrivelse = Behandlingskode.parse(kolonner[2]).beskrivelse)),
         utbetalingsKontotype = "Bankkonto",
         utbetalingsKontonummer = kolonner[10],
-        status = Status(kode = kolonner[11], beskrivelse = PosteringStatus.parse(kolonner[11]).beskrivelse),
+        posteringsstatus = Posteringsstatus(kode = kolonner[11], beskrivelse = PosteringStatus.parse(kolonner[11]).beskrivelse),
         ytelsestype = "Eivind sjekker dette",
         ytelsegrad = lesValgfriKolonne(kolonner[14])?.toInt(),
         forsystemPosteringsdato = parseValgfriDato(kolonner[16]),
