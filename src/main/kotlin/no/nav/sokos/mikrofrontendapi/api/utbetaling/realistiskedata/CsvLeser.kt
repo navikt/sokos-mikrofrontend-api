@@ -5,13 +5,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import mu.KotlinLogging
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Aktoer
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingskode
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingsstatus
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.DebetKredit
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringStatus
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringsstatus
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.*
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 
@@ -44,23 +38,23 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
     return PosteringData(
         beregningsId = "1000",
         rettighetshaver = Aktoer(Aktoertype.PERSON, kolonner[0], "Navn Navnesen"),
-        posteringsdato = parseDato(kolonner[5]),
-        utbetalingsdato = parseValgfriDato(kolonner[15]),
-        posteringsbeloep = parseBigDecimal(kolonner[8]),
-        bilagsnummer = (kolonner[6] + kolonner[7]).replace(" ", ""),
+        posteringsdato = parseDato(kolonner[6]),
+        utbetalingsdato = parseValgfriDato(kolonner[16]),
+        posteringsbeløp = DebetKreditBeløp(parseBigDecimal(kolonner[9]), DebetKredit.parse(kolonner[10]).kode),
+        bilagsnummer = (kolonner[7] + kolonner[8]).replace(" ", ""),
         posteringskonto = kolonner[1],
-        ytelsesperiode = parseValgfriDato(kolonner[12])?.let { Periode(it, parseDato(kolonner[13])) },
-        ansvarssted = kolonner[4],
-        kostnadssted = kolonner[3],
-        debetKredit = DebetKredit.parse(kolonner[9]).kode,
+        ytelsesperiode = parseValgfriDato(kolonner[13])?.let { Periode(it, parseDato(kolonner[14])) },
+        ansvarssted = kolonner[5],
+        kostnadssted = kolonner[4],
         behandlingsstatus = (Behandlingsstatus(kode = kolonner[2], beskrivelse = Behandlingskode.parse(kolonner[2]).beskrivelse)),
         utbetalingsKontotype = "Bankkonto",
-        utbetalingsKontonummer = kolonner[10],
-        posteringsstatus = Posteringsstatus(kode = kolonner[11], beskrivelse = PosteringStatus.parse(kolonner[11]).beskrivelse),
-        ytelsestype = kolonner[19],
-        ytelsegrad = lesValgfriKolonne(kolonner[14])?.toInt(),
-        forsystemPosteringsdato = parseValgfriDato(kolonner[16]),
-        utbetalingsmottaker = Aktoer(Aktoertype.PERSON, kolonner[0], "Navn Navnesen")
+        utbetalingsKontonummer = kolonner[11],
+        posteringsstatus = Posteringsstatus(kode = kolonner[12], beskrivelse = PosteringStatus.parse(kolonner[12]).beskrivelse),
+        ytelsestype = kolonner[3],
+        ytelsegrad = lesValgfriKolonne(kolonner[15])?.toInt(),
+        forsystemPosteringsdato = parseValgfriDato(kolonner[17]),
+        utbetalingsmottaker = Aktoer(Aktoertype.PERSON, kolonner[0], "Navn Navnesen"),
+        utbetalingsnettobeløp = lesValgfriKolonne(kolonner[20])?.let { DebetKreditBeløp(parseBigDecimal(it), DebetKredit.parse(kolonner[21]).kode)  }
     )
 
 }

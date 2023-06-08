@@ -9,24 +9,27 @@ data class PosteringData(
     val rettighetshaver: Aktoer,
     val posteringsdato: LocalDate,
     val utbetalingsdato: LocalDate?,
-    val posteringsbeloep: BigDecimal,
+    val posteringsbeløp: DebetKreditBeløp,
     val bilagsnummer: String,
     val posteringskonto: String,
     val ytelsesperiode: Periode?,
     val ansvarssted: String,
     val kostnadssted: String,
     val behandlingsstatus: Behandlingsstatus,
-    val debetKredit: String,
     val utbetalingsKontonummer: String,
     val utbetalingsKontotype: String,
     val posteringsstatus: Posteringsstatus,
     val ytelsegrad: Int?,
     val ytelsestype: String,
     val forsystemPosteringsdato: LocalDate?,
-    val utbetalingsmottaker: Aktoer
-    ) {
+    val utbetalingsmottaker: Aktoer,
+    val utbetalingsnettobeløp: DebetKreditBeløp?
+) {
     companion object
 }
+
+data class DebetKreditBeløp(val beløp: BigDecimal, val debetKredit: String)
+
 
 data class Posteringsstatus(val kode: String, val beskrivelse: String)
 
