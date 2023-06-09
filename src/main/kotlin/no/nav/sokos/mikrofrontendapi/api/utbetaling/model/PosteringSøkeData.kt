@@ -12,6 +12,7 @@ data class PosteringSøkeData(
     val utbetalingsmottaker: String?,
     val periodetype: Periodetype,
     val periode: Periode,
+    val kostnadsted: String?,
     val ansvarssted: String?,
     val posteringskontoFra: String?,
     val posteringskontoTil: String?
