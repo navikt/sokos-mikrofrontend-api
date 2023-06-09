@@ -10,6 +10,7 @@ data class PosteringData(
     val posteringsdato: LocalDate,
     val utbetalingsdato: LocalDate?,
     val posteringsbeløp: DebetKreditBeløp,
+    val bilagsserie: String,
     val bilagsnummer: String,
     val posteringskonto: String,
     val ytelsesperiode: Periode?,
@@ -23,7 +24,7 @@ data class PosteringData(
     val ytelsestype: String,
     val forsystemPosteringsdato: LocalDate?,
     val utbetalingsmottaker: Aktoer,
-    val utbetalingsnettobeløp: DebetKreditBeløp?
+    val utbetalingsnettobeløp: DebetKreditBeløp?,
 ) {
     companion object
 }
