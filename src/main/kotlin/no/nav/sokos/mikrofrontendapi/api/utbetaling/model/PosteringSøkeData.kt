@@ -5,8 +5,6 @@ import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 
 
-
-
 data class PosteringSøkeData(
     val rettighetshaver: String?,
     val utbetalingsmottaker: String?,
