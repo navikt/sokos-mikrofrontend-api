@@ -29,7 +29,9 @@ data class PosteringData(
     companion object
 }
 
-data class DebetKreditBeløp(val beløp: BigDecimal, val debetKredit: String)
+data class DebetKreditBeløp(val beløpUtenFortegn: BigDecimal, val debetKredit: String) {
+    val beløp = if (debetKredit == "K") -beløpUtenFortegn else beløpUtenFortegn
+}
 
 
 data class Posteringsstatus(val kode: String, val beskrivelse: String)
