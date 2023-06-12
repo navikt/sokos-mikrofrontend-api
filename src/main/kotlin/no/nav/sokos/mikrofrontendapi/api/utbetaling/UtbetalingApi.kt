@@ -29,6 +29,7 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                 val posteringSøkeData: PosteringSøkeData = call.receive()
                 logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
+                logger.info {"Data tilgjengelig: ${UtbetalingApi.posteringer}"}
                 val posteringskontoTil = posteringSøkeData.posteringskontoTil ?: posteringSøkeData.posteringskontoFra
                 val posteringsresultat =
                     UtbetalingApi
