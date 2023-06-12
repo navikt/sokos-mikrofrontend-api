@@ -29,7 +29,7 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                 val posteringSøkeData: PosteringSøkeData = call.receive()
                 logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
-                logger.info {"Data tilgjengelig: ${UtbetalingApi.posteringer}"}
+                logger.info ("Data tilgjengelig: ${UtbetalingApi.posteringer}")
                 val posteringskontoTil = posteringSøkeData.posteringskontoTil ?: posteringSøkeData.posteringskontoFra
                 val posteringsresultat =
                     UtbetalingApi
@@ -42,8 +42,8 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                         .filter { posteringskontoTil == null || it.posteringskonto  <= posteringskontoTil }
                         .filter { it.ytelsesperiode == null ||  posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.fomDato.isBefore(posteringSøkeData.periode.fomDato) }
                         .filter { it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.tomDato.isAfter(posteringSøkeData.periode.tomDato) }
-                        .filter { it.utbetalingsdato == null || (posteringSøkeData.periodetype == Periodetype.UTBETALINGSPERIODE && !it.utbetalingsdato.isBefore(posteringSøkeData.periode.fomDato)) }
-                        .filter { it.utbetalingsdato == null || (posteringSøkeData.periodetype == Periodetype.UTBETALINGSPERIODE && !it.utbetalingsdato.isAfter(posteringSøkeData.periode.tomDato)) }
+                        .filter { it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isBefore(posteringSøkeData.periode.fomDato) }
+                        .filter { it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isAfter(posteringSøkeData.periode.tomDato) }
                 if (posteringsresultat.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent)
                 } else {
