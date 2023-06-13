@@ -21,9 +21,49 @@ import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 private val logger = KotlinLogging.logger {}
 
 object UtbetalingApi {
-    val posteringer = CsvLeser().lesFil("/mockposteringer.csv")
+    private val posteringer = CsvLeser().lesFil("/mockposteringer.csv")
 
-    fun hentPosteringer(posteringSøkeData: PosteringSøkeData): List<PosteringData> {
+    fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
+        authenticate(useAuthentication, AUTHENTICATION_NAME) {
+            route("/api/utbetaling") {
+
+                post("/hentPostering") {
+                    val posteringSøkeData: PosteringSøkeData = call.receive()
+                    logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
+
+                    val posteringsresultat = UtbetalingApi.hentPosteringer(posteringSøkeData)
+
+                    if (posteringsresultat.isEmpty()) {
+                        call.respond(HttpStatusCode.NoContent)
+                    } else {
+                        logger.info("Returnerer følgende data: $posteringsresultat")
+                        val response = HentPosteringResponse(posteringsresultat)
+                        logger.info("Returnerer følgende response: ${response.tilJson()}")
+                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
+                    }
+                }
+
+                post("/tilCsv") {
+                    val posteringSøkeData: PosteringSøkeData = call.receive()
+                    logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
+
+                    val posteringsresultat = hentPosteringer(posteringSøkeData)
+
+                    if (posteringsresultat.isEmpty()) {
+                        call.respond(HttpStatusCode.NoContent)
+                    } else {
+                        val csv = posteringsresultat.tilCsv()
+
+                        logger.info("Returnerer følgende CSV: $csv")
+                        call.respondText(posteringsresultat.tilCsv(), ContentType.Text.CSV, HttpStatusCode.OK)
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun hentPosteringer(posteringSøkeData: PosteringSøkeData): List<PosteringData> {
         val posteringskontoTil = posteringSøkeData.posteringskontoTil ?: posteringSøkeData.posteringskontoFra
         return posteringer
             .filter { posteringSøkeData.rettighetshaver?.equals(it.rettighetshaver.ident) ?: true }
@@ -56,56 +96,31 @@ object UtbetalingApi {
 
 }
 
-fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
-    authenticate(useAuthentication, AUTHENTICATION_NAME) {
-        route("/api/utbetaling") {
-
-            post("/hentPostering") {
-                val posteringSøkeData: PosteringSøkeData = call.receive()
-                logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
-
-                val posteringsresultat = UtbetalingApi.hentPosteringer(posteringSøkeData)
-
-                if (posteringsresultat.isEmpty()) {
-                    call.respond(HttpStatusCode.NoContent)
-                } else {
-                    logger.info("Returnerer følgende data: $posteringsresultat")
-                    val response = HentPosteringResponse(posteringsresultat)
-                    logger.info("Returnerer følgende response: ${response.tilJson()}")
-                    call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
-                }
-            }
-
-            post("/tilCsv") {
-                val posteringSøkeData: PosteringSøkeData = call.receive()
-                logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
-
-                val posteringsresultat = UtbetalingApi.hentPosteringer(posteringSøkeData)
-
-                if (posteringsresultat.isEmpty()) {
-                    call.respond(HttpStatusCode.NoContent)
-                } else {
-                    val csv = posteringsresultat.tilCsv()
-
-                    logger.info("Returnerer følgende CSV: $csv")
-                    call.respondText(posteringsresultat.tilCsv(), ContentType.Text.CSV, HttpStatusCode.OK)
-                }
-            }
-
-        }
-    }
-}
 
 fun List<PosteringData>.tilCsv(): String {
     val kolonneHeader =
         buildString {
-            append("beregningsId;rettighetshaver;posteringsdato;utbetalingsdato;posteringsbeløp;bilagsserie;bilagsnummer;")
-                .append("posteringskonto;fomDato;tomDato;ansvarssted;kostnadssted;behandlingsstatus;utbetalingskontonummer;utbetalingskontotype;")
-                .append("posteringsstatus;")
-                .append("ytelsegrad;")
-                .append("ytelsestype;")
-                .append("forsystemPosteringsdato;")
-                .append("Utbetalingsmottaker;")
+            append("beregningsId;")
+            append("rettighetshaver;")
+            append("posteringsdato;")
+            append("utbetalingsdato;")
+            append("posteringsbeløp;")
+            append("bilagsserie;")
+            append("bilagsnummer;")
+            append("posteringskonto;")
+            append("fomDato;")
+            append("tomDato;")
+            append("ansvarssted;")
+            append("kostnadssted;")
+            append("behandlingsstatus;");
+            append("utbetalingskontonummer;")
+            append("utbetalingskontotype;")
+            append("posteringsstatus;")
+            append("ytelsegrad;")
+            append("ytelsestype;")
+            append("forsystemPosteringsdato;")
+            append("Utbetalingsmottaker;")
+            append("utbetalingsnettobeløp")
         }
 
     return "$kolonneHeader\n" + map { it.tilCsv() }.joinToString("\n")
