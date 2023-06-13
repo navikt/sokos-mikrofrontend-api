@@ -1,14 +1,17 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling
 
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.CsvLeser
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
@@ -19,6 +22,22 @@ private val logger = KotlinLogging.logger {}
 
 object UtbetalingApi {
     val posteringer = CsvLeser().lesFil("/mockposteringer.csv")
+
+    fun hentPosteringer(posteringSøkeData: PosteringSøkeData): List<PosteringData> {
+        val posteringskontoTil = posteringSøkeData.posteringskontoTil ?: posteringSøkeData.posteringskontoFra
+        return posteringer
+            .filter { posteringSøkeData.rettighetshaver?.equals(it.rettighetshaver.ident) ?: true }
+            .filter { posteringSøkeData.utbetalingsmottaker?.equals(it.rettighetshaver.ident) ?: true }
+            .filter { posteringSøkeData.ansvarssted?.equals(it.ansvarssted) ?: true }
+            .filter { posteringSøkeData.kostnadssted?.equals(it.kostnadssted) ?: true }
+            .filter { posteringSøkeData.posteringskontoFra == null || it.posteringskonto >= posteringSøkeData.posteringskontoFra }
+            .filter { posteringskontoTil == null || it.posteringskonto  <= posteringskontoTil }
+            .filter { it.ytelsesperiode == null ||  posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.fomDato.isBefore(posteringSøkeData.periode.fomDato) }
+            .filter { it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.tomDato.isAfter(posteringSøkeData.periode.tomDato) }
+            .filter { it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isBefore(posteringSøkeData.periode.fomDato) }
+            .filter { it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isAfter(posteringSøkeData.periode.tomDato) }
+    }
+
 }
 
 fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
@@ -29,21 +48,8 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                 val posteringSøkeData: PosteringSøkeData = call.receive()
                 logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
-                logger.info ("Data tilgjengelig: ${UtbetalingApi.posteringer}")
-                val posteringskontoTil = posteringSøkeData.posteringskontoTil ?: posteringSøkeData.posteringskontoFra
-                val posteringsresultat =
-                    UtbetalingApi
-                        .posteringer
-                        .filter { posteringSøkeData.rettighetshaver?.equals(it.rettighetshaver.ident) ?: true }
-                        .filter { posteringSøkeData.utbetalingsmottaker?.equals(it.rettighetshaver.ident) ?: true }
-                        .filter { posteringSøkeData.ansvarssted?.equals(it.ansvarssted) ?: true }
-                        .filter { posteringSøkeData.kostnadssted?.equals(it.kostnadssted) ?: true }
-                        .filter { posteringSøkeData.posteringskontoFra == null || it.posteringskonto >= posteringSøkeData.posteringskontoFra }
-                        .filter { posteringskontoTil == null || it.posteringskonto  <= posteringskontoTil }
-                        .filter { it.ytelsesperiode == null ||  posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.fomDato.isBefore(posteringSøkeData.periode.fomDato) }
-                        .filter { it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.tomDato.isAfter(posteringSøkeData.periode.tomDato) }
-                        .filter { it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isBefore(posteringSøkeData.periode.fomDato) }
-                        .filter { it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isAfter(posteringSøkeData.periode.tomDato) }
+                val posteringsresultat = UtbetalingApi.hentPosteringer(posteringSøkeData)
+
                 if (posteringsresultat.isEmpty()) {
                     call.respond(HttpStatusCode.NoContent)
                 } else {
@@ -52,8 +58,38 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                     logger.info("Returnerer følgende response: ${response.tilJson()}")
                     call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
                 }
-
             }
+
+            post("/tilCsv") {
+                val posteringSøkeData: PosteringSøkeData = call.receive()
+                logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
+
+                val posteringsresultat = UtbetalingApi.hentPosteringer(posteringSøkeData)
+
+                if (posteringsresultat.isEmpty()) {
+                    call.respond(HttpStatusCode.NoContent)
+                } else {
+                    val csv = posteringsresultat.tilCsv()
+
+                    logger.info("Returnerer følgende CSV: $csv")
+                    call.respondText ( posteringsresultat.tilCsv(), ContentType.Text.CSV, HttpStatusCode.OK )
+                }
+            }
+
         }
     }
+}
+
+private fun List<PosteringData>.tilCsv(): String {
+    val kolonneHeader = "beregningsId;rettighetshaver"
+
+    return "$kolonneHeader\n" + map{it.tilCsv()}.joinToString("\n")
+}
+
+private fun PosteringData.tilCsv(): String {
+    val strBuilder = StringBuilder()
+    strBuilder.append("$beregningsId;")
+    strBuilder.append("${rettighetshaver.ident};")
+
+    return strBuilder.toString()
 }
