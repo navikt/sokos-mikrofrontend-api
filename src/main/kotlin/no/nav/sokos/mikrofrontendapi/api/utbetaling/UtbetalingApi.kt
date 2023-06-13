@@ -31,7 +31,7 @@ object UtbetalingApi {
                     val posteringSøkeData: PosteringSøkeData = call.receive()
                     logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
-                    val posteringsresultat = UtbetalingApi.hentPosteringer(posteringSøkeData)
+                    val posteringsresultat = hentPosteringer(posteringSøkeData)
 
                     if (posteringsresultat.isEmpty()) {
                         call.respond(HttpStatusCode.NoContent)
@@ -112,7 +112,7 @@ fun List<PosteringData>.tilCsv(): String {
             append("tomDato;")
             append("ansvarssted;")
             append("kostnadssted;")
-            append("behandlingsstatus;");
+            append("behandlingsstatus;")
             append("utbetalingskontonummer;")
             append("utbetalingskontotype;")
             append("posteringsstatus;")
@@ -127,28 +127,27 @@ fun List<PosteringData>.tilCsv(): String {
 }
 
 private fun PosteringData.tilCsv(): String {
-    val strBuilder = StringBuilder()
-    strBuilder.append("$beregningsId;")
-    strBuilder.append("${rettighetshaver.ident};")
-    strBuilder.append("${posteringsdato};")
-    strBuilder.append("${utbetalingsdato};")
-    strBuilder.append("${posteringsbeløp.beløp};")
-    strBuilder.append("${bilagsserie};")
-    strBuilder.append("${bilagsnummer};")
-    strBuilder.append("$posteringskonto;")
-    strBuilder.append("${ytelsesperiode?.fomDato};")
-    strBuilder.append("${ytelsesperiode?.tomDato};")
-    strBuilder.append("$ansvarssted;")
-    strBuilder.append("$kostnadssted;")
-    strBuilder.append("${behandlingsstatus.kode};")
-    strBuilder.append("$utbetalingsKontonummer;")
-    strBuilder.append("$utbetalingsKontotype;")
-    strBuilder.append("${posteringsstatus.kode};")
-    strBuilder.append("$ytelsegrad;")
-    strBuilder.append("$ytelsestype;")
-    strBuilder.append("$forsystemPosteringsdato;")
-    strBuilder.append("${utbetalingsmottaker.ident};")
-    strBuilder.append("${utbetalingsnettobeløp?.beløp}")
-
-    return strBuilder.toString()
+    return buildString {
+        append("$beregningsId;")
+        append("${rettighetshaver.ident};")
+        append("${posteringsdato};")
+        append("${utbetalingsdato};")
+        append("${posteringsbeløp.beløp};")
+        append("${bilagsserie};")
+        append("${bilagsnummer};")
+        append("$posteringskonto;")
+        append("${ytelsesperiode?.fomDato};")
+        append("${ytelsesperiode?.tomDato};")
+        append("$ansvarssted;")
+        append("$kostnadssted;")
+        append("${behandlingsstatus.kode};")
+        append("$utbetalingsKontonummer;")
+        append("$utbetalingsKontotype;")
+        append("${posteringsstatus.kode};")
+        append("$ytelsegrad;")
+        append("$ytelsestype;")
+        append("$forsystemPosteringsdato;")
+        append("${utbetalingsmottaker.ident};")
+        append("${utbetalingsnettobeløp?.beløp}")
+    }
 }
