@@ -31,11 +31,27 @@ object UtbetalingApi {
             .filter { posteringSøkeData.ansvarssted?.equals(it.ansvarssted) ?: true }
             .filter { posteringSøkeData.kostnadssted?.equals(it.kostnadssted) ?: true }
             .filter { posteringSøkeData.posteringskontoFra == null || it.posteringskonto >= posteringSøkeData.posteringskontoFra }
-            .filter { posteringskontoTil == null || it.posteringskonto  <= posteringskontoTil }
-            .filter { it.ytelsesperiode == null ||  posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.fomDato.isBefore(posteringSøkeData.periode.fomDato) }
-            .filter { it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.tomDato.isAfter(posteringSøkeData.periode.tomDato) }
-            .filter { it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isBefore(posteringSøkeData.periode.fomDato) }
-            .filter { it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isAfter(posteringSøkeData.periode.tomDato) }
+            .filter { posteringskontoTil == null || it.posteringskonto <= posteringskontoTil }
+            .filter {
+                it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.fomDato.isBefore(
+                    posteringSøkeData.periode.fomDato
+                )
+            }
+            .filter {
+                it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.tomDato.isAfter(
+                    posteringSøkeData.periode.tomDato
+                )
+            }
+            .filter {
+                it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isBefore(
+                    posteringSøkeData.periode.fomDato
+                )
+            }
+            .filter {
+                it.utbetalingsdato == null || posteringSøkeData.periodetype != Periodetype.UTBETALINGSPERIODE || !it.utbetalingsdato.isAfter(
+                    posteringSøkeData.periode.tomDato
+                )
+            }
     }
 
 }
@@ -72,7 +88,7 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
                     val csv = posteringsresultat.tilCsv()
 
                     logger.info("Returnerer følgende CSV: $csv")
-                    call.respondText ( posteringsresultat.tilCsv(), ContentType.Text.CSV, HttpStatusCode.OK )
+                    call.respondText(posteringsresultat.tilCsv(), ContentType.Text.CSV, HttpStatusCode.OK)
                 }
             }
 
@@ -80,16 +96,44 @@ fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
     }
 }
 
-private fun List<PosteringData>.tilCsv(): String {
-    val kolonneHeader = "beregningsId;rettighetshaver"
+fun List<PosteringData>.tilCsv(): String {
+    val kolonneHeader =
+        buildString {
+            append("beregningsId;rettighetshaver;posteringsdato;utbetalingsdato;posteringsbeløp;bilagsserie;bilagsnummer;")
+                .append("posteringskonto;fomDato;tomDato;ansvarssted;kostnadssted;behandlingsstatus;utbetalingskontonummer;utbetalingskontotype;")
+                .append("posteringsstatus;")
+                .append("ytelsegrad;")
+                .append("ytelsestype;")
+                .append("forsystemPosteringsdato;")
+                .append("Utbetalingsmottaker;")
+        }
 
-    return "$kolonneHeader\n" + map{it.tilCsv()}.joinToString("\n")
+    return "$kolonneHeader\n" + map { it.tilCsv() }.joinToString("\n")
 }
 
 private fun PosteringData.tilCsv(): String {
     val strBuilder = StringBuilder()
     strBuilder.append("$beregningsId;")
     strBuilder.append("${rettighetshaver.ident};")
+    strBuilder.append("${posteringsdato};")
+    strBuilder.append("${utbetalingsdato};")
+    strBuilder.append("${posteringsbeløp.beløp};")
+    strBuilder.append("${bilagsserie};")
+    strBuilder.append("${bilagsnummer};")
+    strBuilder.append("$posteringskonto;")
+    strBuilder.append("${ytelsesperiode?.fomDato};")
+    strBuilder.append("${ytelsesperiode?.tomDato};")
+    strBuilder.append("$ansvarssted;")
+    strBuilder.append("$kostnadssted;")
+    strBuilder.append("${behandlingsstatus.kode};")
+    strBuilder.append("$utbetalingsKontonummer;")
+    strBuilder.append("$utbetalingsKontotype;")
+    strBuilder.append("${posteringsstatus.kode};")
+    strBuilder.append("$ytelsegrad;")
+    strBuilder.append("$ytelsestype;")
+    strBuilder.append("$forsystemPosteringsdato;")
+    strBuilder.append("${utbetalingsmottaker.ident};")
+    strBuilder.append("${utbetalingsnettobeløp?.beløp}")
 
     return strBuilder.toString()
 }
