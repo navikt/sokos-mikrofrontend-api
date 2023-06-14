@@ -10,9 +10,6 @@ import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import java.math.BigDecimal
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.*
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
@@ -152,7 +149,7 @@ private fun PosteringData.tilCsv(): String {
         append("$ytelsestype;")
         append("${forsystemPosteringsdato ?: ""};")
         append("${utbetalingsmottaker.ident};")
-        append("${formaterDesimaltall(utbetalingsnettobeløp?.beløp)}")
+        append(formaterDesimaltall(utbetalingsnettobeløp?.beløp))
     }
 }
 
@@ -163,5 +160,5 @@ private fun BigDecimal.formater(): String {
 }
 
 private fun formaterDesimaltall(verdi: BigDecimal?): String {
-    return verdi?.let{it.formater()} ?: ""
+    return verdi?.formater() ?: ""
 }
