@@ -9,6 +9,10 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import java.math.BigDecimal
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.*
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
@@ -132,7 +136,7 @@ private fun PosteringData.tilCsv(): String {
         append("${rettighetshaver.ident};")
         append("${posteringsdato};")
         append("${utbetalingsdato};")
-        append("${posteringsbeløp.beløp};")
+        append("${posteringsbeløp.beløp.formater()};")
         append("${bilagsserie};")
         append("${bilagsnummer};")
         append("$posteringskonto;")
@@ -148,6 +152,12 @@ private fun PosteringData.tilCsv(): String {
         append("$ytelsestype;")
         append("$forsystemPosteringsdato;")
         append("${utbetalingsmottaker.ident};")
-        append("${utbetalingsnettobeløp?.beløp}")
+        append("${utbetalingsnettobeløp?.beløp?.formater()}")
     }
+}
+
+private fun BigDecimal.formater(): String {
+    val df = DecimalFormat("#,##0.00")
+    df.decimalFormatSymbols = DecimalFormatSymbols(Locale.getDefault())
+    return df.format(this)
 }

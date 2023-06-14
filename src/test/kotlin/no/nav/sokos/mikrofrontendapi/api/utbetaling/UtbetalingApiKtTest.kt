@@ -20,6 +20,6 @@ internal class UtbetalingApiKtTest {
 
         assertEquals(antallSeparatorerIOverskrift, antallSeparatorerIRad)
 
-        //println(csv)
+        println(csv)
     }
 }
