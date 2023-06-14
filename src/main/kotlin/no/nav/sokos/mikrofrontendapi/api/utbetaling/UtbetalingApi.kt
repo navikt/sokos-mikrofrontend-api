@@ -136,7 +136,7 @@ private fun PosteringData.tilCsv(): String {
         append("${posteringsbeløp.beløp.formater()};")
         append("${bilagsserie};")
         append("${bilagsnummer};")
-        append("$posteringskonto;")
+        append("\"$posteringskonto\";")
         append("${ytelsesperiode?.fomDato ?: ""};")
         append("${ytelsesperiode?.tomDato ?: ""};")
         append("$ansvarssted;")
