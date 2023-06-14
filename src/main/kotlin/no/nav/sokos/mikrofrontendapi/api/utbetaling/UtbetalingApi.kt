@@ -135,29 +135,33 @@ private fun PosteringData.tilCsv(): String {
         append("$beregningsId;")
         append("${rettighetshaver.ident};")
         append("${posteringsdato};")
-        append("${utbetalingsdato};")
+        append("${utbetalingsdato ?: ""};")
         append("${posteringsbeløp.beløp.formater()};")
         append("${bilagsserie};")
         append("${bilagsnummer};")
         append("$posteringskonto;")
-        append("${ytelsesperiode?.fomDato};")
-        append("${ytelsesperiode?.tomDato};")
+        append("${ytelsesperiode?.fomDato ?: ""};")
+        append("${ytelsesperiode?.tomDato ?: ""};")
         append("$ansvarssted;")
         append("$kostnadssted;")
         append("${behandlingsstatus.kode};")
         append("$utbetalingsKontonummer;")
         append("$utbetalingsKontotype;")
         append("${posteringsstatus.kode};")
-        append("$ytelsegrad;")
+        append("${ytelsegrad ?: ""};")
         append("$ytelsestype;")
-        append("$forsystemPosteringsdato;")
+        append("${forsystemPosteringsdato ?: ""};")
         append("${utbetalingsmottaker.ident};")
-        append("${utbetalingsnettobeløp?.beløp?.formater()}")
+        append("${formaterDesimaltall(utbetalingsnettobeløp?.beløp)}")
     }
 }
 
 private fun BigDecimal.formater(): String {
-    val df = DecimalFormat("#,##0.00")
-    df.decimalFormatSymbols = DecimalFormatSymbols(Locale.getDefault())
-    return df.format(this)
+    return this.toString()
+        .replace(".", ",")
+        .replace(" ", "")
+}
+
+private fun formaterDesimaltall(verdi: BigDecimal?): String {
+    return verdi?.let{it.formater()} ?: ""
 }
