@@ -37,7 +37,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
     val kolonner = csvRad.split(";")
     return PosteringData(
         beregningsId = "1000",
-        rettighetshaver = Aktoer(Aktoertype.PERSON, kolonner[0], "Navn Navnesen"),
+        rettighetshaver = Aktoer(Aktoertype.PERSON, kolonner[0], "Ærlig Østenpå"),
         posteringsdato = parseDato(kolonner[6]),
         utbetalingsdato = parseValgfriDato(kolonner[16]),
         posteringsbeløp = DebetKreditBeløp(parseBigDecimal(kolonner[9]), DebetKredit.parse(kolonner[10]).kode),
@@ -54,7 +54,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         ytelsestype = kolonner[3],
         ytelsegrad = lesValgfriKolonne(kolonner[15])?.toInt(),
         forsystemPosteringsdato = parseValgfriDato(kolonner[17]),
-        utbetalingsmottaker = Aktoer(Aktoertype.PERSON, kolonner[0], "Navn Navnesen"),
+        utbetalingsmottaker = Aktoer(Aktoertype.PERSON, kolonner[0], "Ærlig Østenpå"),
         utbetalingsnettobeløp = lesValgfriKolonne(kolonner[20])?.let { DebetKreditBeløp(parseBigDecimal(it), DebetKredit.parse(kolonner[21]).kode)  }
     )
 

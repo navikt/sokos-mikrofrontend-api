@@ -102,7 +102,8 @@ fun List<PosteringData>.tilCsv(): String {
     val kolonneHeader =
         buildString {
             append("beregningsId;")
-            append("rettighetshaver;")
+            append("rettighetshaver ident;")
+            append("rettighetshaver navn;")
             append("posteringsdato;")
             append("utbetalingsdato;")
             append("posteringsbeløp;")
@@ -120,7 +121,8 @@ fun List<PosteringData>.tilCsv(): String {
             append("ytelsegrad;")
             append("ytelsestype;")
             append("forsystemPosteringsdato;")
-            append("Utbetalingsmottaker;")
+            append("Utbetalingsmottaker ident;")
+            append("utbetalingsmottaker navn;")
             append("utbetalingsnettobeløp")
         }
 
@@ -131,6 +133,7 @@ private fun PosteringData.tilCsv(): String {
     return buildString {
         append("$beregningsId;")
         append("\t${rettighetshaver.ident};")
+        append("\t${rettighetshaver.navn};")
         append("${posteringsdato};")
         append("${utbetalingsdato ?: ""};")
         append("${posteringsbeløp.beløp.formater()};")
@@ -149,6 +152,7 @@ private fun PosteringData.tilCsv(): String {
         append("$ytelsestype;")
         append("${forsystemPosteringsdato ?: ""};")
         append("\t${utbetalingsmottaker.ident};")
+        append("\t${utbetalingsmottaker.navn};")
         append(formaterDesimaltall(utbetalingsnettobeløp?.beløp))
     }
 }
