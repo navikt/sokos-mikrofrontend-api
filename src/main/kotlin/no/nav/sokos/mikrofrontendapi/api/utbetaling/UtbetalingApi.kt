@@ -13,6 +13,7 @@ import java.math.BigDecimal
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSumData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.CsvLeser
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
@@ -38,9 +39,10 @@ object UtbetalingApi {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
                         logger.info("Returnerer følgende data: $posteringsresultat")
-                        val response = HentPosteringResponse(posteringsresultat)
+                        val posteringSumData = posteringsresultat.summer()
+                        val response = HentPosteringResponse(posteringsresultat, posteringSumData)
                         logger.info("Returnerer følgende response: ${response.tilJson()}")
-                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
+                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat, posteringSumData))
                     }
                 }
 
@@ -94,6 +96,19 @@ object UtbetalingApi {
                 )
             }
     }
+
+}
+
+fun List<PosteringData>.summer(): List<PosteringSumData> {
+    return groupBy(PosteringData::posteringskonto)
+        .mapValues { entry ->
+            PosteringSumData(
+                entry.key,
+                "todo",
+                entry.value.map { pd -> pd.posteringsbeløp.beløp }.sumOf { it }
+            )
+        }.values.toList()
+
 
 }
 
