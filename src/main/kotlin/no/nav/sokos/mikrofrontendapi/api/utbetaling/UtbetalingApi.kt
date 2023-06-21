@@ -39,9 +39,10 @@ object UtbetalingApi {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
                         logger.info("Returnerer følgende data: $posteringsresultat")
-                        val response = HentPosteringResponse(posteringsresultat, posteringsresultat.summer())
+                        val posteringSumData = posteringsresultat.summer()
+                        val response = HentPosteringResponse(posteringsresultat, posteringSumData)
                         logger.info("Returnerer følgende response: ${response.tilJson()}")
-                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat))
+                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat, posteringSumData))
                     }
                 }
 
@@ -98,15 +99,15 @@ object UtbetalingApi {
 
 }
 
-private fun List<PosteringData>.summer(): List<PosteringSumData> {
-
-    val mapValues = groupBy { posteringData: PosteringData -> posteringData.posteringskonto }
-        .map { entry ->
-            entry.value.fold {, acc, neste -> acc.posteringsbeløp.beløp.add(neste.posteringsbeløp.beløp) }
-        }
-
-
-    return emptyList()
+fun List<PosteringData>.summer(): List<PosteringSumData> {
+    return groupBy(PosteringData::posteringskonto)
+        .mapValues { entry ->
+            PosteringSumData(
+                entry.key,
+                "todo",
+                entry.value.map { pd -> pd.posteringsbeløp.beløp }.sumOf { it }
+            )
+        }.values.toList()
 
 
 }
