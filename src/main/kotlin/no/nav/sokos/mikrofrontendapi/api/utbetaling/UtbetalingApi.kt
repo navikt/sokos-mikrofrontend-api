@@ -73,8 +73,8 @@ object UtbetalingApi {
             .filter { posteringSøkeData.utbetalingsmottaker?.equals(it.rettighetshaver.ident) ?: true }
             .filter { posteringSøkeData.ansvarssted?.equals(it.ansvarssted) ?: true }
             .filter { posteringSøkeData.kostnadssted?.equals(it.kostnadssted) ?: true }
-            .filter { posteringSøkeData.posteringskontoFra == null || it.posteringskonto >= posteringSøkeData.posteringskontoFra }
-            .filter { posteringskontoTil == null || it.posteringskonto <= posteringskontoTil }
+            .filter { posteringSøkeData.posteringskontoFra == null || it.posteringskonto.kontonummer >= posteringSøkeData.posteringskontoFra }
+            .filter { posteringskontoTil == null || it.posteringskonto.kontonummer <= posteringskontoTil }
             .filter {
                 it.ytelsesperiode == null || posteringSøkeData.periodetype != Periodetype.YTELSESPERIODE || !it.ytelsesperiode.fomDato.isBefore(
                     posteringSøkeData.periode.fomDato

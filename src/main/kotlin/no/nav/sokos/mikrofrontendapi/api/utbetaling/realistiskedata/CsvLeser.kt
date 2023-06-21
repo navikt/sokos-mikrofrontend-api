@@ -43,7 +43,7 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         posteringsbeløp = DebetKreditBeløp(parseBigDecimal(kolonner[9]), DebetKredit.parse(kolonner[10]).kode),
         bilagsserie = (kolonner[7]).replace(" ", ""),
         bilagsnummer = (kolonner[8]).replace(" ", ""),
-        posteringskonto = kolonner[1],
+        posteringskonto = Posteringskonto(kolonner[1], "todo navn posteringskonto"),
         ytelsesperiode = parseValgfriDato(kolonner[13])?.let { Periode(it, parseDato(kolonner[14])) },
         ansvarssted = kolonner[4],
         kostnadssted = kolonner[5],

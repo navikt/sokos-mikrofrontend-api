@@ -12,7 +12,7 @@ data class PosteringData(
     val posteringsbeløp: DebetKreditBeløp,
     val bilagsserie: String,
     val bilagsnummer: String,
-    val posteringskonto: String,
+    val posteringskonto: Posteringskonto,
     val ytelsesperiode: Periode?,
     val ansvarssted: String,
     val kostnadssted: String,
@@ -37,3 +37,5 @@ data class DebetKreditBeløp(val beløpUtenFortegn: BigDecimal, val debetKredit:
 data class Posteringsstatus(val kode: String, val beskrivelse: String)
 
 data class Behandlingsstatus(val kode: String, val beskrivelse: String)
+
+data class Posteringskonto(val kontonummer: String, val kontonavn: String)
