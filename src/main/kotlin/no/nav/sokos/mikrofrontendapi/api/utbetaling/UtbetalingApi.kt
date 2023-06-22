@@ -104,7 +104,6 @@ fun List<PosteringData>.summer(): List<PosteringSumData> {
         .mapValues { entry ->
             PosteringSumData(
                 entry.key,
-                "todo",
                 entry.value.map { pd -> pd.posteringsbeløp.beløp }.sumOf { it }
             )
         }.values.toList()
