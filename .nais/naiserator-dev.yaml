@@ -48,6 +48,9 @@ spec:
         - application: sokos-op-fasade
           cluster: dev-gcp
           namespace: okonomi
+    outbound:
+      external:
+        - host: pdl-api.dev-fss-pub.nais.io
   env:
     - name: USE_AUTHENTICATION
       value: "true"
