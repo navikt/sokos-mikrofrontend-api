@@ -48,7 +48,8 @@ object PropertiesConfig {
         val profile: Profile = Profile.valueOf(this["APPLICATION_PROFILE"]),
         val useAuthentication: Boolean = get("USE_AUTHENTICATION").toBoolean(),
         val azureAdConfig: AzureAdConfig = AzureAdConfig(),
-        val azureAdProviderConfig: AzureAdProviderConfig = AzureAdProviderConfig()
+        val azureAdProviderConfig: AzureAdProviderConfig = AzureAdProviderConfig(),
+        val pdlUrl: String = readProperty("PDL_URL")
     )
 
     class AzureAdConfig(

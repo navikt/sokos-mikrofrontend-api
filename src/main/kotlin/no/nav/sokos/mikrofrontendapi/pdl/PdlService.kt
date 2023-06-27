@@ -8,7 +8,6 @@ import io.ktor.client.request.url
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.nav.pdl.HentPerson
-import no.nav.pdl.hentperson.Navn
 import no.nav.sokos.mikrofrontendapi.security.AccessTokenProvider
 
 private val logger = KotlinLogging.logger {}
@@ -16,14 +15,14 @@ private val logger = KotlinLogging.logger {}
 class PdlService (
     private val graphQlClient: GraphQLKtorClient,
     private val pdlUrl: String,
-    private val accessTokenProvider: AccessTokenProvider
+    private val accessTokenProvider: AccessTokenProvider?
 ) {
 
-    fun hentPerson(ident: String): List<Navn> {
+    fun hentPerson(ident: String): String? {
         val request = HentPerson(HentPerson.Variables(ident = ident))
 
         val result = runBlocking {
-            val accessToken = accessTokenProvider.hentAccessToken()
+            val accessToken = accessTokenProvider?.hentAccessToken()
             graphQlClient.execute(request) {
                 url(pdlUrl)
                 header("Authorization", "Bearer $accessToken")
@@ -39,11 +38,20 @@ class PdlService (
 
     }
 
-    private fun hentNavn(result: GraphQLClientResponse<HentPerson.Result>) =
-        result.data?.hentPerson?.navn ?: emptyList()
+    private fun hentNavn(result: GraphQLClientResponse<HentPerson.Result>): String? {
+        val navnListe = result.data?.hentPerson?.navn
+        if (navnListe == null || navnListe.isEmpty()) {
+            return null
+        }
 
-    private fun handleErrors(errors: List<GraphQLClientError>): List<Navn> =
-        if (errors.mapNotNull { it.extensions }.any { it["code"] == "not_found" }) emptyList()
+        return navnListe.map{ "${it.fornavn} ${it.mellomnavn ?: ""} ${it.etternavn}" }.first()
+    }
+
+
+
+
+    private fun handleErrors(errors: List<GraphQLClientError>): String? =
+        if (errors.mapNotNull { it.extensions }.any { it["code"] == "not_found" }) null
         else throw Exception("feil med henting av identer").also { logger.error { "Feil i GraphQL-responsen: $errors" } }
 
 }

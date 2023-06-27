@@ -1,5 +1,6 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling
 
+import com.expediagroup.graphql.client.ktor.GraphQLKtorClient
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
@@ -10,20 +11,34 @@ import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import java.math.BigDecimal
+import java.net.URL
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSumData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.CsvLeser
+import no.nav.sokos.mikrofrontendapi.appConfig
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
 import no.nav.sokos.mikrofrontendapi.config.authenticate
+import no.nav.sokos.mikrofrontendapi.pdl.PdlService
+import no.nav.sokos.mikrofrontendapi.security.AccessTokenProvider
+import no.nav.sokos.mikrofrontendapi.util.httpClient
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 
 private val logger = KotlinLogging.logger {}
 
 object UtbetalingApi {
     private val posteringer = CsvLeser().lesFil("/mockposteringer.csv")
+    val accessTokenProvider =
+        if (appConfig.azureAdProviderConfig.useSecurity) AccessTokenProvider(
+            appConfig.azureAdProviderConfig,
+            httpClient
+        ) else null
+
+    val graphQlClient = GraphQLKtorClient( URL(appConfig.pdlUrl) )
+    val pdlService = PdlService(graphQlClient, appConfig.pdlUrl, accessTokenProvider)
+
 
     fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
         authenticate(useAuthentication, AUTHENTICATION_NAME) {
@@ -33,7 +48,10 @@ object UtbetalingApi {
                     val posteringSøkeData: PosteringSøkeData = call.receive()
                     logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
-                    val posteringsresultat = hentPosteringer(posteringSøkeData)
+                    val posteringsresultat = hentPosteringer(posteringSøkeData).map {
+                        val navn = pdlService.hentPerson(it.rettighetshaver.ident) ?: it.rettighetshaver.navn
+                        it.copy(rettighetshaver = it.rettighetshaver.copy(navn = navn))
+                    }
 
                     if (posteringsresultat.isEmpty()) {
                         call.respond(HttpStatusCode.NoContent)

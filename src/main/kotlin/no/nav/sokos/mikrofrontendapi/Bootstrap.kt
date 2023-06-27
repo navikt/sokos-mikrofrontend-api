@@ -5,20 +5,19 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.engine.stop
 import io.ktor.server.netty.Netty
 import java.util.concurrent.TimeUnit
-import kotlin.properties.Delegates
 import no.nav.sokos.mikrofrontendapi.config.PropertiesConfig
 import no.nav.sokos.mikrofrontendapi.config.commonConfig
 import no.nav.sokos.mikrofrontendapi.config.configureRouting
 import no.nav.sokos.mikrofrontendapi.config.configureSecurity
 import no.nav.sokos.mikrofrontendapi.metrics.appStateReadyFalse
 import no.nav.sokos.mikrofrontendapi.metrics.appStateRunningFalse
+import kotlin.properties.Delegates
+
+val appConfig = PropertiesConfig.Configuration()
 
 fun main() {
     val applicationState = ApplicationState()
-    val applicationConfiguration = PropertiesConfig.Configuration()
-
-    HttpServer(applicationState, applicationConfiguration).start()
-
+    HttpServer(applicationState, appConfig).start()
 }
 class HttpServer(
     private val applicationState: ApplicationState,
