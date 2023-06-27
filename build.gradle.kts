@@ -17,7 +17,7 @@ val graphqlClientVersion = "7.0.0-alpha.0"
 plugins {
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.serialization") version "1.8.0"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
     id("com.expediagroup.graphql") version "6.5.3"
 }
 
