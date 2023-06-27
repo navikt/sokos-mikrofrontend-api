@@ -1,6 +1,8 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.expediagroup.graphql.plugin.gradle.tasks.GraphQLGenerateClientTask
+
 
 val ktorVersion = "2.2.2"
 val junitJupiterVersion = "5.9.1"
@@ -10,11 +12,13 @@ val jacksonVersion = "2.14.1"
 val prometheusVersion = "1.10.3"
 val natpryceVersion = "1.6.10.0"
 val kotlinLoggingVersion = "3.0.4"
+val graphqlClientVersion = "7.0.0-alpha.0"
 
 plugins {
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.serialization") version "1.8.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.expediagroup.graphql") version "6.5.3"
 }
 
 group = "no.nav.sokos"
@@ -59,6 +63,14 @@ dependencies {
     // Config
     implementation("com.natpryce:konfig:$natpryceVersion")
 
+    // PDL grapql
+    implementation("com.expediagroup:graphql-kotlin-ktor-client:$graphqlClientVersion")
+    {
+        exclude(group = "com.expediagroup", module = "graphql-kotlin-client-serialization")
+    }
+    implementation("com.expediagroup:graphql-kotlin-client-jackson:$graphqlClientVersion")
+
+
     // Test
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
@@ -101,4 +113,10 @@ tasks {
     withType<Wrapper>().configureEach {
         gradleVersion = "7.6"
     }
+}
+
+val graphqlGenerateClient by tasks.getting(GraphQLGenerateClientTask::class) {
+    packageName.set("no.nav.pdl")
+    schemaFile.set(file("${project.projectDir}/src/main/resources/graphql/pdl.graphqls"))
+    queryFileDirectory.set(file("${project.projectDir}/src/main/resources/graphql"))
 }
