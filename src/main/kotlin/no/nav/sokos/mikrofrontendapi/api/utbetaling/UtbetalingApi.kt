@@ -30,15 +30,14 @@ private val logger = KotlinLogging.logger {}
 
 object UtbetalingApi {
     private val posteringer = CsvLeser().lesFil("/mockposteringer.csv")
-    val accessTokenProvider =
+    private val accessTokenProvider =
         if (appConfig.azureAdProviderConfig.useSecurity) AccessTokenProvider(
             appConfig.azureAdProviderConfig,
             httpClient
         ) else null
 
-    val graphQlClient = GraphQLKtorClient( URL(appConfig.pdlUrl) )
-    val pdlService = PdlService(graphQlClient, appConfig.pdlUrl, accessTokenProvider)
-
+    private val graphQlClient = GraphQLKtorClient( URL(appConfig.pdlUrl) )
+    private val pdlService = PdlService(graphQlClient, appConfig.pdlUrl, accessTokenProvider)
 
     fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
         authenticate(useAuthentication, AUTHENTICATION_NAME) {
@@ -48,19 +47,16 @@ object UtbetalingApi {
                     val posteringSøkeData: PosteringSøkeData = call.receive()
                     logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
-                    val posteringsresultat = hentPosteringer(posteringSøkeData).map {
-                        val navn = pdlService.hentPerson(it.rettighetshaver.ident) ?: it.rettighetshaver.navn
-                        it.copy(rettighetshaver = it.rettighetshaver.copy(navn = navn))
-                    }
+                    val posteringer = posteringerMedNavnFraPdl(hentPosteringer(posteringSøkeData))
 
-                    if (posteringsresultat.isEmpty()) {
+                    if (posteringer.isEmpty()) {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
-                        logger.info("Returnerer følgende data: $posteringsresultat")
-                        val posteringSumData = posteringsresultat.summer()
-                        val response = HentPosteringResponse(posteringsresultat, posteringSumData)
+                        logger.info("Returnerer følgende data: $posteringer")
+                        val posteringSumData = posteringer.summer()
+                        val response = HentPosteringResponse(posteringer, posteringSumData)
                         logger.info("Returnerer følgende response: ${response.tilJson()}")
-                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringsresultat, posteringSumData))
+                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringer, posteringSumData))
                     }
                 }
 
@@ -81,6 +77,15 @@ object UtbetalingApi {
                 }
 
             }
+        }
+    }
+
+    private fun posteringerMedNavnFraPdl(posteringer: List<PosteringData>): List<PosteringData> {
+        val navnMap = posteringer
+            .map { it.rettighetshaver.ident }.toSet().map { it to (pdlService.hentPerson(it)) }.toMap()
+
+        return posteringer.map {
+            it.copy(rettighetshaver = it.rettighetshaver.copy(navn = navnMap.get(it.rettighetshaver.ident) ?: it.rettighetshaver.navn))
         }
     }
 
