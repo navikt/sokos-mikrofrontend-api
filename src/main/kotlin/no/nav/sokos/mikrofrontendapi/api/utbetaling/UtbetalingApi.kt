@@ -82,7 +82,7 @@ object UtbetalingApi {
 
     private fun posteringerMedNavnFraPdl(posteringer: List<PosteringData>): List<PosteringData> {
         val navnMap = posteringer
-            .map { it.rettighetshaver.ident }.toSet().map { it to (pdlService.hentPerson(it)) }.toMap()
+            .map { it.rettighetshaver.ident }.toSet().map { it to (pdlService.hentPerson(it))?.navn }.toMap()
 
         return posteringer.map {
             it.copy(rettighetshaver = it.rettighetshaver.copy(navn = navnMap.get(it.rettighetshaver.ident) ?: it.rettighetshaver.navn))

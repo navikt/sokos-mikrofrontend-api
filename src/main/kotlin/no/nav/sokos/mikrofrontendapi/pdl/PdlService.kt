@@ -8,50 +8,47 @@ import io.ktor.client.request.url
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import no.nav.pdl.HentPerson
+import no.nav.pdl.hentperson.Person
+import no.nav.sokos.mikrofrontendapi.domene.PersonData
 import no.nav.sokos.mikrofrontendapi.security.AccessTokenProvider
 
 private val logger = KotlinLogging.logger {}
 
-class PdlService (
+class PdlService(
     private val graphQlClient: GraphQLKtorClient,
     private val pdlUrl: String,
     private val accessTokenProvider: AccessTokenProvider?
 ) {
 
-    fun hentPerson(ident: String): String? {
+    fun hentPerson(ident: String): PersonData? {
         val request = HentPerson(HentPerson.Variables(ident = ident))
 
-        val result = runBlocking {
+        val resultat = runBlocking {
             val accessToken = accessTokenProvider?.hentAccessToken()
             graphQlClient.execute(request) {
                 url(pdlUrl)
                 header("Authorization", "Bearer $accessToken")
             }
         }
-        return result.errors?.let { errors ->
+        return resultat.errors?.let { errors ->
             if (errors.isEmpty()) {
-                hentNavn(result)
+                hentPerson(resultat)?.let { person: Person -> PersonData.fra(ident, person)  }
             } else {
                 handleErrors(errors)
             }
-        } ?: hentNavn(result)
+        } ?: hentPerson(resultat)?.let { person: Person -> PersonData.fra(ident, person)  }
 
     }
 
-    private fun hentNavn(result: GraphQLClientResponse<HentPerson.Result>): String? {
-        val navnListe = result.data?.hentPerson?.navn
-        if (navnListe == null || navnListe.isEmpty()) {
-            return null
-        }
-
-        return navnListe.map{ "${it.fornavn} ${it.mellomnavn ?: ""} ${it.etternavn}" }.first()
+    private fun hentPerson(result: GraphQLClientResponse<HentPerson.Result>): Person? {
+        return result.data?.hentPerson
     }
 
 
-
-
-    private fun handleErrors(errors: List<GraphQLClientError>): String? =
+    private fun handleErrors(errors: List<GraphQLClientError>): PersonData? =
         if (errors.mapNotNull { it.extensions }.any { it["code"] == "not_found" }) null
-        else throw Exception("feil med henting av identer").also { logger.error { "Feil i GraphQL-responsen: $errors" } }
+        else throw Exception("Feil med henting av person fra PDL").also { logger.error { "Feil i GraphQL-responsen: $errors" } }
 
 }
+
+
