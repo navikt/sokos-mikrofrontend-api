@@ -21,9 +21,9 @@ data class PersonData(
     companion object {
         fun fra(ident: String, person: Person): PersonData {
             return PersonData(
-                ident,
-                person.navn.map { "${it.fornavn} ${it.mellomnavn ?: ""} ${it.etternavn}" }.first(),
-                fra(person.adressebeskyttelse.first().gradering)
+                ident = ident,
+                navn = person.navn.first().let { "${it.fornavn} ${it.mellomnavn ?: ""} ${it.etternavn}" },
+                adressebeskyttelse = fra(person.adressebeskyttelse.firstOrNull()?.gradering)
             )
         }
     }
@@ -36,7 +36,7 @@ enum class AdressebeskyttelseGraderingData {
     UGRADERT;
 
     companion object {
-        fun fra(adressebeskyttelseGradering: AdressebeskyttelseGradering): AdressebeskyttelseGraderingData {
+        fun fra(adressebeskyttelseGradering: AdressebeskyttelseGradering?): AdressebeskyttelseGraderingData {
             return when (adressebeskyttelseGradering) {
                 AdressebeskyttelseGradering.STRENGT_FORTROLIG_UTLAND -> STRENGT_FORTROLIG
                 AdressebeskyttelseGradering.STRENGT_FORTROLIG -> STRENGT_FORTROLIG
