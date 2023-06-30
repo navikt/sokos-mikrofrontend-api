@@ -24,6 +24,7 @@ import no.nav.sokos.mikrofrontendapi.config.authenticate
 import no.nav.sokos.mikrofrontendapi.pdl.PdlService
 import no.nav.sokos.mikrofrontendapi.security.AccessTokenProvider
 import no.nav.sokos.mikrofrontendapi.util.httpClient
+import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 
 private val logger = KotlinLogging.logger {}
@@ -92,8 +93,17 @@ object UtbetalingApi {
             navnFraPdl ?: posteringer.first().rettighetshaver.navn
         }
 
-        val resultat = posteringer.map{
-            it.copy(rettighetshaver = it.rettighetshaver.copy(navn = navnRettighetshaver))
+        val navnMottaker: String? = posteringSøkeData.utbetalingsmottaker?.let {
+            posteringer.first().utbetalingsmottaker.navn
+        }
+
+        val resultat = posteringer.map {
+            it.copy(
+                rettighetshaver = it.rettighetshaver.copy(navn = navnRettighetshaver),
+                utbetalingsmottaker = it.utbetalingsmottaker.copy(
+                    navn = if (it.utbetalingsmottaker.aktoertype == Aktoertype.ORGANISASJON) it.utbetalingsmottaker.navn else navnMottaker
+                )
+            )
         }
 
         return resultat
