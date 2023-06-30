@@ -47,7 +47,7 @@ object UtbetalingApi {
                     val posteringSøkeData: PosteringSøkeData = call.receive()
                     logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
-                    val posteringer = posteringerMedNavnFraPdl(hentPosteringer(posteringSøkeData))
+                    val posteringer = posteringerMedNavnFraPdl(posteringSøkeData)
 
                     if (posteringer.isEmpty()) {
                         call.respond(HttpStatusCode.NoContent)
@@ -64,7 +64,7 @@ object UtbetalingApi {
                     val posteringSøkeData: PosteringSøkeData = call.receive()
                     logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
-                    val posteringsresultat = hentPosteringer(posteringSøkeData)
+                    val posteringsresultat = posteringerMedNavnFraPdl(posteringSøkeData)
 
                     if (posteringsresultat.isEmpty()) {
                         call.respond(HttpStatusCode.NoContent)
@@ -80,13 +80,23 @@ object UtbetalingApi {
         }
     }
 
-    private fun posteringerMedNavnFraPdl(posteringer: List<PosteringData>): List<PosteringData> {
-        val navnMap = posteringer
-            .map { it.rettighetshaver.ident }.toSet().map { it to (pdlService.hentPerson(it))?.navn }.toMap()
+    private fun posteringerMedNavnFraPdl(posteringSøkeData: PosteringSøkeData): List<PosteringData> {
+        val posteringer = hentPosteringer(posteringSøkeData)
 
-        return posteringer.map {
-            it.copy(rettighetshaver = it.rettighetshaver.copy(navn = navnMap.get(it.rettighetshaver.ident) ?: it.rettighetshaver.navn))
+        if (posteringer.isEmpty()) {
+            return emptyList()
         }
+
+        val navnRettighetshaver: String? = posteringSøkeData.rettighetshaver?.let {
+            val navnFraPdl = pdlService.hentPerson(it)?.navn
+            navnFraPdl ?: posteringer.first().rettighetshaver.navn
+        }
+
+        val resultat = posteringer.map{
+            it.copy(rettighetshaver = it.rettighetshaver.copy(navn = navnRettighetshaver))
+        }
+
+        return resultat
     }
 
     private fun hentPosteringer(posteringSøkeData: PosteringSøkeData): List<PosteringData> {
