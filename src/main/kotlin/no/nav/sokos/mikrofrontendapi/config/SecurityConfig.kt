@@ -36,15 +36,17 @@ fun Application.configureSecurity(
                 )
                 validate { credential ->
                     try {
+                        log.info { "PAYLOAD :: " + credential.payload }
+
                         requireNotNull(credential.payload.audience) {
                             log.info("Auth: Missing audience in token")
                             "Auth: Missing audience in token"
                         }
                         require(credential.payload.audience.contains(azureAdConfig.clientId)) {
-                            log.info { "PAYLOAD :: " + credential.payload }
                             log.info("Auth: Valid audience not found in claims")
                             "Auth: Valid audience not found in claims"
                         }
+
                         JWTPrincipal(credential.payload)
                     } catch (e: Exception) {
                         log.warn(e) { "Client authentication failed" }
