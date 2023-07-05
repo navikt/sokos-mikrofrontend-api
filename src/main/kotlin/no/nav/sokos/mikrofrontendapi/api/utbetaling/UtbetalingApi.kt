@@ -10,13 +10,13 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Routing
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import java.math.BigDecimal
 import java.net.URL
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSumData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.summer
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.tilCsv
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.CsvLeser
 import no.nav.sokos.mikrofrontendapi.appConfig
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
@@ -71,9 +71,8 @@ object UtbetalingApi {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
                         val csv = posteringsresultat.tilCsv()
-
                         logger.info("Returnerer følgende CSV: $csv")
-                        call.respondText(posteringsresultat.tilCsv(), ContentType.Text.CSV, HttpStatusCode.OK)
+                        call.respondText(csv, ContentType.Text.CSV, HttpStatusCode.OK)
                     }
                 }
 
@@ -142,90 +141,4 @@ object UtbetalingApi {
 
 }
 
-fun List<PosteringData>.summer(): List<PosteringSumData> {
-    return groupBy(PosteringData::posteringskonto)
-        .mapValues { entry ->
-            PosteringSumData(
-                entry.key,
-                entry.value.map { pd -> pd.posteringsbeløp.beløp }.sumOf { it }
-            )
-        }.values.toList()
 
-
-}
-
-
-fun List<PosteringData>.tilCsv(): String {
-    val kolonneHeader =
-        buildString {
-            append("beregningsId;")
-            append("rettighetshaver ident;")
-            append("rettighetshaver navn;")
-            append("posteringsdato;")
-            append("utbetalingsdato;")
-            append("posteringsbeløp;")
-            append("bilagsserie;")
-            append("bilagsnummer;")
-            append("posteringskonto;")
-            append("posteringskonto navn;")
-            append("fomDato;")
-            append("tomDato;")
-            append("ansvarssted;")
-            append("kostnadssted;")
-            append("behandlingsstatus kode;")
-            append("behandlingsstatus navn;")
-            append("utbetalingskontonummer;")
-            append("utbetalingskontotype;")
-            append("posteringsstatus kode;")
-            append("posteringsstatus navn;")
-            append("ytelsegrad;")
-            append("ytelsestype;")
-            append("forsystemPosteringsdato;")
-            append("Utbetalingsmottaker ident;")
-            append("utbetalingsmottaker navn;")
-            append("utbetalingsnettobeløp")
-        }
-
-    return "$kolonneHeader\n" + map { it.tilCsv() }.joinToString("\n")
-}
-
-private fun PosteringData.tilCsv(): String {
-    return buildString {
-        append("$beregningsId;")
-        append("\t${rettighetshaver.ident};")
-        append("\t${rettighetshaver.navn};")
-        append("${posteringsdato};")
-        append("${utbetalingsdato ?: ""};")
-        append("${posteringsbeløp.beløp.formater()};")
-        append("\t${bilagsserie};")
-        append("\t${bilagsnummer};")
-        append("\t${posteringskonto.kontonummer};")
-        append("${posteringskonto.kontonavn};")
-        append("${ytelsesperiode?.fomDato ?: ""};")
-        append("${ytelsesperiode?.tomDato ?: ""};")
-        append("\t$ansvarssted;")
-        append("\t$kostnadssted;")
-        append("${behandlingsstatus.kode};")
-        append("${behandlingsstatus.beskrivelse};")
-        append("\t$utbetalingsKontonummer;")
-        append("$utbetalingsKontotype;")
-        append("${posteringsstatus.kode};")
-        append("${posteringsstatus.beskrivelse};")
-        append("${ytelsegrad ?: ""};")
-        append("$ytelsestype;")
-        append("${forsystemPosteringsdato ?: ""};")
-        append("\t${utbetalingsmottaker.ident};")
-        append("\t${utbetalingsmottaker.navn};")
-        append(formaterDesimaltall(utbetalingsnettobeløp?.beløp))
-    }
-}
-
-private fun BigDecimal.formater(): String {
-    return this.toString()
-        .replace(".", ",")
-        .replace(" ", "")
-}
-
-private fun formaterDesimaltall(verdi: BigDecimal?): String {
-    return verdi?.formater() ?: ""
-}

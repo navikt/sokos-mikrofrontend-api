@@ -1,5 +1,6 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling
 
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.tilCsv
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.CsvLeser
 import org.junit.jupiter.api.Test
 

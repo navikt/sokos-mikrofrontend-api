@@ -1,18 +1,22 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata
 
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Aktoer
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingskode
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Behandlingsstatus
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.DebetKredit
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.DebetKreditBeløp
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringStatus
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringskonto
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringsstatus
+import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
+import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 import java.io.BufferedReader
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import mu.KotlinLogging
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.*
-import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
-import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
 
-
-private val logger = KotlinLogging.logger { }
-
-class CsvLeser() {
+class CsvLeser {
 
     fun lesFil(filnavn: String): List<PosteringData> {
         return reader(filnavn)
@@ -23,11 +27,8 @@ class CsvLeser() {
     }
 
     private fun reader(filnavn: String): BufferedReader {
-        logger.info { "Skal forsøke å lese fil $filnavn" }
-        val reader = this::class.java.getResourceAsStream(filnavn)
+        return this::class.java.getResourceAsStream(filnavn)
             ?.bufferedReader(Charsets.UTF_8) ?: throw RuntimeException("Fant ikke filen $filnavn")
-
-        return reader
     }
 }
 
@@ -47,15 +48,26 @@ private fun PosteringData.Companion.fraCsv(csvRad: String): PosteringData {
         ytelsesperiode = parseValgfriDato(kolonner[13])?.let { Periode(it, parseDato(kolonner[14])) },
         ansvarssted = kolonner[4],
         kostnadssted = kolonner[5],
-        behandlingsstatus = (Behandlingsstatus(kode = kolonner[2], beskrivelse = Behandlingskode.parse(kolonner[2]).beskrivelse)),
+        behandlingsstatus = (Behandlingsstatus(
+            kode = kolonner[2],
+            beskrivelse = Behandlingskode.parse(kolonner[2]).beskrivelse
+        )),
         utbetalingsKontotype = "Bankkonto",
         utbetalingsKontonummer = kolonner[11],
-        posteringsstatus = Posteringsstatus(kode = kolonner[12], beskrivelse = PosteringStatus.parse(kolonner[12]).beskrivelse),
+        posteringsstatus = Posteringsstatus(
+            kode = kolonner[12],
+            beskrivelse = PosteringStatus.parse(kolonner[12]).beskrivelse
+        ),
         ytelsestype = kolonner[3],
         ytelsegrad = lesValgfriKolonne(kolonner[15])?.toInt(),
         forsystemPosteringsdato = parseValgfriDato(kolonner[17]),
         utbetalingsmottaker = Aktoer(Aktoertype.PERSON, kolonner[0], "Ærlig Østenpå"),
-        utbetalingsnettobeløp = lesValgfriKolonne(kolonner[20])?.let { DebetKreditBeløp(parseBigDecimal(it), DebetKredit.parse(kolonner[21]).kode)  }
+        utbetalingsnettobeløp = lesValgfriKolonne(kolonner[20])?.let {
+            DebetKreditBeløp(
+                parseBigDecimal(it),
+                DebetKredit.parse(kolonner[21]).kode
+            )
+        }
     )
 
 }
@@ -71,10 +83,10 @@ private fun parseDato(datoString: String): LocalDate {
 private fun parseValgfriDato(valgfriKolonne: String?): LocalDate? {
     val verdi = lesValgfriKolonne(valgfriKolonne)
 
-    if (verdi == null) {
-        return null
+    return if (verdi == null) {
+        null
     } else {
-        return parseDato(verdi)
+        parseDato(verdi)
     }
 }
 

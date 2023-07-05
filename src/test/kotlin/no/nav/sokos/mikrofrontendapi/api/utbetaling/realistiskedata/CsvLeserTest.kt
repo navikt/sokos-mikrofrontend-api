@@ -1,7 +1,7 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata
 
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.summer
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.summer
 import org.junit.jupiter.api.Test
 
 internal class CsvLeserTest {
