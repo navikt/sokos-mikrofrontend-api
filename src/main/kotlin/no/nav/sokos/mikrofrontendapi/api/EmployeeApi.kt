@@ -17,6 +17,10 @@ fun Routing.employeeApi(
     authenticate(useAuthentication, AUTHENTICATION_NAME) {
         route("api") {
             get("employee") {
+                // Retrieve the token from the request headers
+                val authorizationHeader = call.request.headers["Authorization"]
+                val token = authorizationHeader?.removePrefix("Bearer ")
+                println("TOKEN::::::::::::::: $token")
                 val employee1 = Employee(
                     1,
                     "Ola Nordmann",
