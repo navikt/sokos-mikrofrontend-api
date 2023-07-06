@@ -23,9 +23,12 @@ import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
 import no.nav.sokos.mikrofrontendapi.config.authenticate
 import no.nav.sokos.mikrofrontendapi.pdl.PdlService
 import no.nav.sokos.mikrofrontendapi.security.AccessTokenProvider
+import no.nav.sokos.mikrofrontendapi.security.MicrosoftGraphAccesTokenProvider
+import no.nav.sokos.mikrofrontendapi.security.MicrosoftGraphServiceKlient
 import no.nav.sokos.mikrofrontendapi.util.httpClient
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
+import java.lang.IllegalStateException
 
 private val logger = KotlinLogging.logger {}
 
@@ -40,6 +43,9 @@ object UtbetalingApi {
     private val graphQlClient = GraphQLKtorClient( URL(appConfig.pdlUrl) )
     private val pdlService = PdlService(graphQlClient, appConfig.pdlUrl, accessTokenProvider)
 
+    private val msAccessTokenProvider: MicrosoftGraphAccesTokenProvider = MicrosoftGraphAccesTokenProvider()
+    private val graphKlient = MicrosoftGraphServiceKlient(httpClient)
+
     fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
         authenticate(useAuthentication, AUTHENTICATION_NAME) {
             route("/api/utbetaling") {
@@ -50,6 +56,14 @@ object UtbetalingApi {
 
                     val posteringer = posteringerMedNavnFraPdl(posteringSøkeData)
 
+                    // Kall MSGraph for å finnen saksbehandlers roller
+                    val oboToken = call.request.headers["Authorization"] ?: throw IllegalStateException("Greier ikke hente token fra request header")
+                    graphKlient.hentRoller("finn_riktig_hash_her", oboToken)
+
+
+
+
+                    // Filtrer posteringer basert på hva saksbehandler har tilgang til å se
                     if (posteringer.isEmpty()) {
                         call.respond(HttpStatusCode.NoContent)
                     } else {

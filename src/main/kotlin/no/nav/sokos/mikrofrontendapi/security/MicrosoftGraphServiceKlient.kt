@@ -8,24 +8,34 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.url
 import io.ktor.http.HttpStatusCode
+import mu.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 class MicrosoftGraphServiceKlient(
     private val httpClient: HttpClient,
-    private val accesTokenProvider: MicrosoftGraphAccesTokenProvider
 ) {
-    private val msGraphUrl: String = "https://graph.microsoft.com/v1.0/me/memberOf"
+    private val memberOfApiQuery: String = "\$count=true&\$orderby=displayName&\$filter=startswith(displayName, '0000-GA-okonomi')";
+    private val msGraphUrl: String = "https://graph.microsoft.com/v1.0/me/memberOf/?$memberOfApiQuery"
 
-    suspend fun hentRoller(ident: String, navCallId: String): List<Rolle> {
+
+
+    suspend fun hentRoller(navCallId: String, token: String): List<Rolle> {
 
         httpClient.get {
             url(msGraphUrl)
-            header("Authorization", "Bearer ${accesTokenProvider.token()}")
+            header("Authorization", token)
+            header("ConsistencyLevel", "eventual")
             header("Nav-Call-Id", navCallId)
         }.let { respons ->
+            logger.info { "Respons fra MSGraph: $respons" }
             if(respons.status == HttpStatusCode.OK){
                 val body: MedlemAv = respons.body<MedlemAv>()
+                logger.info { "Body fra MSGraph: $body" }
             }
         }
+
+        // Husk å filtrere bort alle roller som ikke er relevante
 
         return emptyList()
     }
