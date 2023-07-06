@@ -9,6 +9,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.url
 import io.ktor.http.HttpStatusCode
 import mu.KotlinLogging
+import java.net.URLEncoder
 
 private val logger = KotlinLogging.logger {}
 
@@ -16,8 +17,8 @@ class MicrosoftGraphServiceKlient(
     private val httpClient: HttpClient,
 ) {
     private val memberOfApiQuery: String = "\$count=true&\$orderby=displayName&\$filter=startswith(displayName, '0000-GA-okonomi')";
-    private val msGraphUrl: String = "https://graph.microsoft.com/v1.0/me/memberOf/?$memberOfApiQuery"
-
+    private val encodedQuery: String = URLEncoder.encode(memberOfApiQuery, "UTF-8")
+    private val msGraphUrl: String = "https://graph.microsoft.com/v1.0/me/memberOf/?$encodedQuery"
 
 
     suspend fun hentRoller(navCallId: String, token: String): List<Rolle> {
