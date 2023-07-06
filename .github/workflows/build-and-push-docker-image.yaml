@@ -1,6 +1,7 @@
 name: Bygg og push Docker image
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
