@@ -1,4 +1,4 @@
-name: Bygg og push Docker image
+name: Manuell deploy til dev
 
 on:
   workflow_dispatch:
