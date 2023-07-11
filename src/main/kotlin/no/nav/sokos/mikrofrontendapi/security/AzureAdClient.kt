@@ -10,6 +10,7 @@ import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.config.PropertiesConfig
@@ -48,6 +49,7 @@ class AzureAdClient(
     suspend fun getSystemToken(scopeClientId: String): AzureAdToken? {
         val azureAdTokenResponse = getAccessToken(
             Parameters.build {
+                append("tenant", azureAd.tenant)
                 append("client_id", azureAd.clientId)
                 append("client_secret", azureAd.clientSecret)
                 append("grant_type", "client_credentials")
@@ -66,6 +68,7 @@ class AzureAdClient(
         return try {
             val response = httpClient.post(azureOpenidConfigTokenEndpoint) {
                 accept(ContentType.Application.Json)
+                method = HttpMethod.Post
                 setBody(FormDataContent(formParameters))
             }
             response.body<AzureAdTokenResponse>()
