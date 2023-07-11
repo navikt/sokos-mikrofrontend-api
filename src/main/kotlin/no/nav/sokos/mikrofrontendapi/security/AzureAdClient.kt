@@ -11,6 +11,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.Parameters
 import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.config.PropertiesConfig
@@ -94,7 +95,14 @@ class AzureAdClient(
                 method = HttpMethod.Post
                 setBody(FormDataContent(formParameters))
             }
-            response.body<AzureAdTokenResponse>()
+
+            if (response.status == HttpStatusCode.OK) {
+                response.body<AzureAdTokenResponse>()
+            } else {
+                logger.error("GetAccessToken returnerte {$response.status} $response")
+                null
+            }
+
         } catch (e: ClientRequestException) {
             handleUnexpectedResponseException(e)
             null
