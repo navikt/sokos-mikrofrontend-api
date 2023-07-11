@@ -23,6 +23,29 @@ class AzureAdClient(
     private val azureOpenidConfigTokenEndpoint: String = "https://login.microsoftonline.com/${azureAd.tenant}/oauth2/v2.0/token",
 ) {
 
+
+    suspend fun getOnBehalfOfTokenForMsGraph(
+        token: String,
+    ): AzureAdToken? {
+        val scope = "https://graph.microsoft.com/.default"
+        val azureAdTokenResponse = getAccessToken(
+            Parameters.build {
+                append("client_id", azureAd.clientId)
+                append("client_secret", azureAd.clientSecret)
+//                append("client_assertion_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
+                append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
+                append("assertion", token)
+                append("scope", scope)
+                append("requested_token_use", "on_behalf_of")
+            }
+        )
+
+        return azureAdTokenResponse?.let {
+            val azureAdToken = it.toAzureAdToken()
+            azureAdToken
+        }
+    }
+
     suspend fun getOnBehalfOfToken(
         scopeClientId: String,
         token: String,

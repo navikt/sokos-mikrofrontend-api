@@ -65,7 +65,11 @@ object UtbetalingApi {
 
                     // Kall MSGraph for å finnen saksbehandlers roller
                     val oboToken = call.request.headers["Authorization"] ?: throw IllegalStateException("Greier ikke hente token fra request header")
-                    graphKlient.hentRoller("finn_riktig_hash_her", oboToken)
+
+                    val onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken)
+                    logger.info("OnBehalfOfToken: $onBehalfOfToken")
+
+                    graphKlient.hentRoller("finn_riktig_hash_her", onBehalfOfToken?.accessToken ?: "")
 
                     // Filtrer posteringer basert på hva saksbehandler har tilgang til å se
                     if (posteringer.isEmpty()) {
