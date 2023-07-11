@@ -30,6 +30,7 @@ import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 import java.lang.IllegalStateException
 import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
+import no.nav.sokos.mikrofrontendapi.security.AzureAdToken
 
 private val logger = KotlinLogging.logger {}
 
@@ -66,10 +67,15 @@ object UtbetalingApi {
                     // Kall MSGraph for å finnen saksbehandlers roller
                     val oboToken = call.request.headers["Authorization"] ?: throw IllegalStateException("Greier ikke hente token fra request header")
 
-                    val onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken)
-                    logger.info("OnBehalfOfToken: $onBehalfOfToken")
+                    var onBehalfOfToken: AzureAdToken? = null
+                    try {
+                        onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken)
+                        logger.info("OnBehalfOfToken: $onBehalfOfToken")
+                    } catch (ex: Throwable) {
+                        logger.error("Fikk exception: ", ex)
+                    }
 
-                    graphKlient.hentRoller("finn_riktig_hash_her", onBehalfOfToken?.accessToken ?: "")
+                    graphKlient.hentRoller("finn_riktig_hash_her", onBehalfOfToken?.accessToken ?: oboToken)
 
                     // Filtrer posteringer basert på hva saksbehandler har tilgang til å se
                     if (posteringer.isEmpty()) {
