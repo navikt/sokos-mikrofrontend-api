@@ -22,6 +22,8 @@ class MicrosoftGraphServiceKlient(
 
 
     suspend fun hentRoller(navCallId: String, token: String): List<Rolle> {
+        // TODO: Fjern logging av token
+        logger.info("Token: $token")
 
         httpClient.get {
             url(msGraphUrl)
