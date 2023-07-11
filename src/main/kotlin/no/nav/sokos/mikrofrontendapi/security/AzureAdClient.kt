@@ -33,7 +33,7 @@ class AzureAdClient(
             Parameters.build {
                 append("client_id", azureAd.clientId)
                 append("client_secret", azureAd.clientSecret)
-//                append("client_assertion_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
+                append("client_assertion_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
                 append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
                 append("assertion", token)
                 append("scope", scope)
@@ -99,7 +99,7 @@ class AzureAdClient(
             if (response.status == HttpStatusCode.OK) {
                 response.body<AzureAdTokenResponse>()
             } else {
-                logger.error("GetAccessToken returnerte {$response.status} $response")
+                logger.error("GetAccessToken returnerte ${response.status} $response")
                 null
             }
 
