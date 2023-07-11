@@ -69,7 +69,7 @@ object UtbetalingApi {
 
                     var onBehalfOfToken: AzureAdToken? = null
                     try {
-                        onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken)
+                        onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken.removePrefix("Bearer "))
                         logger.info("OnBehalfOfToken: $onBehalfOfToken")
                     } catch (ex: Throwable) {
                         logger.error("Fikk exception: ", ex)
