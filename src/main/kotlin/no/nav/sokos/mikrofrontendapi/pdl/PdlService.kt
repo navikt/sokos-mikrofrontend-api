@@ -10,21 +10,21 @@ import mu.KotlinLogging
 import no.nav.pdl.HentPerson
 import no.nav.pdl.hentperson.Person
 import no.nav.sokos.mikrofrontendapi.domene.PersonData
-import no.nav.sokos.mikrofrontendapi.security.AccessTokenProvider
+import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
 
 private val logger = KotlinLogging.logger {}
 
 class PdlService(
     private val graphQlClient: GraphQLKtorClient,
     private val pdlUrl: String,
-    private val accessTokenProvider: AccessTokenProvider?
+    private val pdlClientId: String,
+    private val accessTokenProvider: AzureAdClient?
 ) {
-
     fun hentPerson(ident: String): PersonData? {
         val request = HentPerson(HentPerson.Variables(ident = ident))
 
         val resultat = runBlocking {
-            val accessToken = accessTokenProvider?.hentAccessToken()
+            val accessToken = accessTokenProvider?.getSystemToken(pdlClientId)
             graphQlClient.execute(request) {
                 url(pdlUrl)
                 header("Authorization", "Bearer $accessToken")

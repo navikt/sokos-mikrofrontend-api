@@ -29,19 +29,26 @@ import no.nav.sokos.mikrofrontendapi.util.httpClient
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 import java.lang.IllegalStateException
+import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
 
 private val logger = KotlinLogging.logger {}
 
 object UtbetalingApi {
     private val posteringer = CsvLeser().lesFil("/mockposteringer.csv")
     private val accessTokenProvider =
-        if (appConfig.azureAdProviderConfig.useSecurity) AccessTokenProvider(
+        if (appConfig.azureAdProviderConfig.useSecurity) AzureAdClient(
             appConfig.azureAdProviderConfig,
             httpClient
         ) else null
 
     private val graphQlClient = GraphQLKtorClient( URL(appConfig.pdlUrl) )
-    private val pdlService = PdlService(graphQlClient, appConfig.pdlUrl, accessTokenProvider)
+
+    private val pdlService = PdlService(
+        graphQlClient = graphQlClient,
+        pdlUrl = appConfig.pdlUrl,
+        pdlClientId = appConfig.azureAdProviderConfig.pdlClientId,
+        accessTokenProvider = accessTokenProvider
+    )
 
     private val msAccessTokenProvider: MicrosoftGraphAccesTokenProvider = MicrosoftGraphAccesTokenProvider()
     private val graphKlient = MicrosoftGraphServiceKlient(httpClient)
@@ -59,9 +66,6 @@ object UtbetalingApi {
                     // Kall MSGraph for å finnen saksbehandlers roller
                     val oboToken = call.request.headers["Authorization"] ?: throw IllegalStateException("Greier ikke hente token fra request header")
                     graphKlient.hentRoller("finn_riktig_hash_her", oboToken)
-
-
-
 
                     // Filtrer posteringer basert på hva saksbehandler har tilgang til å se
                     if (posteringer.isEmpty()) {
