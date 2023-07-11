@@ -24,7 +24,7 @@ class PdlService(
         val request = HentPerson(HentPerson.Variables(ident = ident))
 
         val resultat = runBlocking {
-            val accessToken = accessTokenProvider?.getSystemToken(pdlClientId)
+            val accessToken = accessTokenProvider?.getSystemToken(pdlClientId)?.accessToken
             graphQlClient.execute(request) {
                 url(pdlUrl)
                 header("Authorization", "Bearer $accessToken")
