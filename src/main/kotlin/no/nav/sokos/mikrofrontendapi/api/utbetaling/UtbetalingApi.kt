@@ -22,15 +22,12 @@ import no.nav.sokos.mikrofrontendapi.appConfig
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
 import no.nav.sokos.mikrofrontendapi.config.authenticate
 import no.nav.sokos.mikrofrontendapi.pdl.PdlService
-import no.nav.sokos.mikrofrontendapi.security.AccessTokenProvider
+import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
 import no.nav.sokos.mikrofrontendapi.security.MicrosoftGraphAccesTokenProvider
 import no.nav.sokos.mikrofrontendapi.security.MicrosoftGraphServiceKlient
 import no.nav.sokos.mikrofrontendapi.util.httpClient
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
-import java.lang.IllegalStateException
-import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
-import no.nav.sokos.mikrofrontendapi.security.AzureAdToken
 
 private val logger = KotlinLogging.logger {}
 
@@ -42,7 +39,7 @@ object UtbetalingApi {
             httpClient
         ) else null
 
-    private val graphQlClient = GraphQLKtorClient( URL(appConfig.pdlUrl) )
+    private val graphQlClient = GraphQLKtorClient(URL(appConfig.pdlUrl))
 
     private val pdlService = PdlService(
         graphQlClient = graphQlClient,
@@ -64,29 +61,32 @@ object UtbetalingApi {
 
                     val posteringer = posteringerMedNavnFraPdl(posteringSøkeData)
 
-                    // Kall MSGraph for å finnen saksbehandlers roller
-                    val oboToken = call.request.headers["Authorization"] ?: throw IllegalStateException("Greier ikke hente token fra request header")
+                    // Kall MSGraph for å finne saksbehandlers roller
+                    val oboToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
+                        ?: throw IllegalStateException("Greier ikke hente token fra request header")
 
-                    var onBehalfOfToken: AzureAdToken? = null
                     try {
-                        onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken.removePrefix("Bearer "))
-                        logger.info("OnBehalfOfToken: $onBehalfOfToken")
+                        val onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken)
+
+                        graphKlient.hentRoller("finn_riktig_hash_her", onBehalfOfToken?.accessToken ?: oboToken)
+
+                        // Filtrer posteringer basert på hva saksbehandler har tilgang til å se
+                        if (posteringer.isEmpty()) {
+                            call.respond(HttpStatusCode.NoContent)
+                        } else {
+                            logger.info("Returnerer følgende data: $posteringer")
+                            val posteringSumData = posteringer.summer()
+                            val response = HentPosteringResponse(posteringer, posteringSumData)
+                            logger.info("Returnerer følgende response: ${response.tilJson()}")
+                            call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringer, posteringSumData))
+                        }
+
                     } catch (ex: Throwable) {
-                        logger.error("Fikk exception: ", ex)
+                        logger.error("Greide ikke å hente brukerens roller: ", ex)
+                        throw throw IllegalStateException("Greide ikke å hente brukerens roller", ex)
                     }
 
-                    graphKlient.hentRoller("finn_riktig_hash_her", onBehalfOfToken?.accessToken ?: oboToken)
 
-                    // Filtrer posteringer basert på hva saksbehandler har tilgang til å se
-                    if (posteringer.isEmpty()) {
-                        call.respond(HttpStatusCode.NoContent)
-                    } else {
-                        logger.info("Returnerer følgende data: $posteringer")
-                        val posteringSumData = posteringer.summer()
-                        val response = HentPosteringResponse(posteringer, posteringSumData)
-                        logger.info("Returnerer følgende response: ${response.tilJson()}")
-                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringer, posteringSumData))
-                    }
                 }
 
                 post("/tilCsv") {
