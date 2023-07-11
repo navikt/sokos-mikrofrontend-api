@@ -22,9 +22,6 @@ class MicrosoftGraphServiceKlient(
 
 
     suspend fun hentRoller(navCallId: String, token: String): List<Rolle> {
-        // TODO: Fjern logging av token
-        logger.info("Token: $token")
-
         httpClient.get {
             url(msGraphUrl)
             header("Authorization", token)
@@ -35,6 +32,7 @@ class MicrosoftGraphServiceKlient(
             if(respons.status == HttpStatusCode.OK){
                 val body: MedlemAv = respons.body<MedlemAv>()
                 logger.info { "Body fra MSGraph: $body" }
+                return body.rolles
             }
         }
 

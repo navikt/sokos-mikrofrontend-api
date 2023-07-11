@@ -68,8 +68,8 @@ object UtbetalingApi {
                     try {
                         val onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken)
 
-                        graphKlient.hentRoller("finn_riktig_hash_her", onBehalfOfToken?.accessToken ?: oboToken)
-
+                        val roller = graphKlient.hentRoller("finn_riktig_hash_her", onBehalfOfToken?.accessToken ?: oboToken)
+                        logger.info("Brukerens roller: $roller")
                         // Filtrer posteringer basert på hva saksbehandler har tilgang til å se
                         if (posteringer.isEmpty()) {
                             call.respond(HttpStatusCode.NoContent)
