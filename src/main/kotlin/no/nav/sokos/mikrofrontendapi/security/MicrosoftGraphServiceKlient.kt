@@ -36,11 +36,10 @@ class MicrosoftGraphServiceKlient(
             }
         }
 
-        // Husk å filtrere bort alle roller som ikke er relevante
-
         return emptyList()
     }
 }
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class MedlemAv(
     @JsonProperty("value")

@@ -10,6 +10,10 @@ data class PersonData(
     private val adressebeskyttelse: AdressebeskyttelseGraderingData
 ) {
 
+    fun erUgradert(): Boolean {
+        return adressebeskyttelse == AdressebeskyttelseGraderingData.UGRADERT
+    }
+
     fun erFortrolig(): Boolean {
         return adressebeskyttelse == AdressebeskyttelseGraderingData.FORTROLIG
     }

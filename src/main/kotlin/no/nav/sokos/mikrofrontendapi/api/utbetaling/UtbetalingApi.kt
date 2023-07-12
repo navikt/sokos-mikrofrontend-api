@@ -22,9 +22,9 @@ import no.nav.sokos.mikrofrontendapi.appConfig
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
 import no.nav.sokos.mikrofrontendapi.config.authenticate
 import no.nav.sokos.mikrofrontendapi.pdl.PdlService
+import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
 import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
-import no.nav.sokos.mikrofrontendapi.security.MicrosoftGraphAccesTokenProvider
-import no.nav.sokos.mikrofrontendapi.security.MicrosoftGraphServiceKlient
+import no.nav.sokos.mikrofrontendapi.security.TilgangService
 import no.nav.sokos.mikrofrontendapi.util.httpClient
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
@@ -48,8 +48,8 @@ object UtbetalingApi {
         accessTokenProvider = accessTokenProvider
     )
 
-    private val msAccessTokenProvider: MicrosoftGraphAccesTokenProvider = MicrosoftGraphAccesTokenProvider()
-    private val graphKlient = MicrosoftGraphServiceKlient(httpClient)
+    private val tilgangService = TilgangService(accessTokenProvider)
+    private val personvernPdlService = PersonvernPdlService(pdlService)
 
     fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
         authenticate(useAuthentication, AUTHENTICATION_NAME) {
@@ -61,32 +61,24 @@ object UtbetalingApi {
 
                     val posteringer = posteringerMedNavnFraPdl(posteringSøkeData)
 
-                    // Kall MSGraph for å finne saksbehandlers roller
-                    val oboToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
-                        ?: throw IllegalStateException("Greier ikke hente token fra request header")
+                    if (posteringer.isEmpty()) {
+                        call.respond(HttpStatusCode.NoContent)
+                    } else {
+                        val saksbehandler = tilgangService.hentSaksbehandler(call)
+                        val identerBrukerHarTilgangTil = posteringer
+                            .map { it.rettighetshaver.ident }
+                            .toSet()
+                            .filter{ personvernPdlService.kanBrukerSePerson(it, saksbehandler)}
 
-                    try {
-                        val onBehalfOfToken = accessTokenProvider?.getOnBehalfOfTokenForMsGraph(oboToken)
+                        val posteringerBrukerHarTilgangTil = posteringer
+                            .filter { identerBrukerHarTilgangTil.contains(it.rettighetshaver.ident) }
 
-                        val roller = graphKlient.hentRoller("finn_riktig_hash_her", onBehalfOfToken?.accessToken ?: oboToken)
-                        logger.info("Brukerens roller: $roller")
-                        // Filtrer posteringer basert på hva saksbehandler har tilgang til å se
-                        if (posteringer.isEmpty()) {
-                            call.respond(HttpStatusCode.NoContent)
-                        } else {
-                            logger.info("Returnerer følgende data: $posteringer")
-                            val posteringSumData = posteringer.summer()
-                            val response = HentPosteringResponse(posteringer, posteringSumData)
-                            logger.info("Returnerer følgende response: ${response.tilJson()}")
-                            call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringer, posteringSumData))
-                        }
-
-                    } catch (ex: Throwable) {
-                        logger.error("Greide ikke å hente brukerens roller: ", ex)
-                        throw throw IllegalStateException("Greide ikke å hente brukerens roller", ex)
+                        logger.info("Returnerer følgende data: $posteringerBrukerHarTilgangTil")
+                        val posteringSumData = posteringerBrukerHarTilgangTil.summer()
+                        val response = HentPosteringResponse(posteringerBrukerHarTilgangTil, posteringSumData)
+                        logger.info("Returnerer følgende response: ${response.tilJson()}")
+                        call.respond(HttpStatusCode.OK, HentPosteringResponse(posteringerBrukerHarTilgangTil, posteringSumData))
                     }
-
-
                 }
 
                 post("/tilCsv") {
