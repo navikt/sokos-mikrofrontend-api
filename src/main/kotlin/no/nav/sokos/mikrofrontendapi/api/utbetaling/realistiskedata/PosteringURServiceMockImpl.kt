@@ -4,9 +4,9 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 
-private val posteringer = CsvLeser().lesFil("/mockposteringer.csv")
 
-class PosteringURServiceMockImpl: PosteringUrService {
+class PosteringURServiceMockImpl(var posteringer: List<PosteringData> = emptyList()): PosteringUrService {
+
     override fun hentPosteringer(posteringSøkeData: PosteringSøkeData): List<PosteringData> {
         val posteringskontoTil = posteringSøkeData.posteringskontoTil ?: posteringSøkeData.posteringskontoFra
         return posteringer
@@ -37,5 +37,4 @@ class PosteringURServiceMockImpl: PosteringUrService {
                 )
             }
     }
-
 }

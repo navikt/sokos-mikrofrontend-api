@@ -16,12 +16,13 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.summer
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.tilCsv
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.CsvLeser
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringService
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringURServiceMockImpl
 import no.nav.sokos.mikrofrontendapi.appConfig
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
 import no.nav.sokos.mikrofrontendapi.config.authenticate
-import no.nav.sokos.mikrofrontendapi.pdl.PdlService
+import no.nav.sokos.mikrofrontendapi.pdl.PdlServiceImpl
 import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
 import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
 import no.nav.sokos.mikrofrontendapi.security.TilgangService
@@ -30,7 +31,7 @@ import no.nav.sokos.mikrofrontendapi.util.httpClient
 private val logger = KotlinLogging.logger {}
 
 object UtbetalingApi {
-    private val posteringURService = PosteringURServiceMockImpl()
+    private val posteringURService = PosteringURServiceMockImpl(CsvLeser().lesFil("/mockposteringer.csv"))
 
     private val accessTokenProvider =
         if (appConfig.azureAdProviderConfig.useSecurity) AzureAdClient(
@@ -40,7 +41,7 @@ object UtbetalingApi {
 
     private val graphQlClient = GraphQLKtorClient(URL(appConfig.pdlUrl))
 
-    private val pdlService = PdlService(
+    private val pdlService = PdlServiceImpl(
         graphQlClient = graphQlClient,
         pdlUrl = appConfig.pdlUrl,
         pdlClientId = appConfig.azureAdProviderConfig.pdlClientId,

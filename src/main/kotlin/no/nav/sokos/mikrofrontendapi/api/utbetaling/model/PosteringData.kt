@@ -31,6 +31,13 @@ data class PosteringData(
 
 data class DebetKreditBeløp(val beløpUtenFortegn: BigDecimal, val debetKredit: String) {
     val beløp = if (debetKredit == "K") -beløpUtenFortegn else beløpUtenFortegn
+
+    companion object {
+        fun fraBigDecimal(beløp: BigDecimal): DebetKreditBeløp {
+            val debetKredit = if (beløp.signum() == 0) "D" else "K"
+            return DebetKreditBeløp(beløp, debetKredit)
+        }
+    }
 }
 
 data class Posteringsstatus(val kode: String, val beskrivelse: String)
