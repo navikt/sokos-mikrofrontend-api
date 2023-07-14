@@ -13,6 +13,10 @@ val prometheusVersion = "1.10.3"
 val natpryceVersion = "1.6.10.0"
 val kotlinLoggingVersion = "3.0.4"
 val graphqlClientVersion = "7.0.0-alpha.0"
+val cucumberVersion = "7.11.0"
+val junit_version= "5.9.0"
+val mockk_version= "1.13.4"
+val assertj_version = "3.24.2"
 
 plugins {
     kotlin("jvm") version "1.8.0"
@@ -30,7 +34,6 @@ repositories {
 }
 
 dependencies {
-
     // Ktor
     implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
@@ -70,17 +73,23 @@ dependencies {
     }
     implementation("com.expediagroup:graphql-kotlin-client-jackson:$graphqlClientVersion")
 
-
     // Test
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+    testImplementation("io.mockk:mockk:$mockk_version")
+    testImplementation("org.assertj:assertj-core:$assertj_version")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
+
+    // Avhengigheter for Cucumber-tester
+    testImplementation("io.cucumber:cucumber-junit:$cucumberVersion")
+    testImplementation("io.cucumber:cucumber-java8:$cucumberVersion")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:$junit_version")
 }
 
 
 tasks {
-
     withType<KotlinCompile>().configureEach {
         compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
