@@ -4,6 +4,53 @@
 
 Egenskap: Søk posteringer
 
+  Scenario: Navn på rettighetshaver skal ikke vises når det ikke er søkt på rettighetshaver.
+    Gitt en saksbehandler med følgende roller:
+      | Rolle |
+      | Les?? |
+
+    Og at følgende posteringer finnes i UR:
+      | Rettighetshaver | Bilagsnummer | Posteringsbeløp | Mottaker    | Mottaker navn | Utbetalingsdato |
+      | 24417337179     | 733740504    | -3572,00        | 24417337179 | Sorte Bill    | 2022-12-12      |
+
+    Og at følgende personer finnes i PDL:
+      | Ident       | Adressebeskyttelse | Navn       |
+      | 24417337179 | Ugradert           | Sorte Bill |
+
+    Når posteringer søkes etter med følgende kriterier:
+      | Periodetype        | Periode FOM | Periode TOM | Posteringskonto fra | Posteringskonto til |
+      | Utbetalingsperiode | 2022-12-01  | 2022-12-31  | 0000000             | 9999999             |
+
+    Så skal følgende posteringer returneres:
+      | Rettighetshaver | Rettighetshaver navn | Bilagsnummer | Posteringsbeløp | Mottaker    | Mottaker navn | Utbetalingsdato |
+      | 24417337179     |                      | 733740504    | -3572,00        | 24417337179 |               | 2022-12-12      |
+
+
+  Scenario: Når det ikke er søkt på mottaker skal navnet på mottakeren bare vises hvis mottaker er en organisasjon.
+
+    Gitt en saksbehandler med følgende roller:
+      | Rolle |
+      | Les?? |
+
+    Og at følgende posteringer finnes i UR:
+      | Rettighetshaver | Bilagsnummer | Posteringsbeløp | Mottaker type | Mottaker    | Mottaker navn             | Utbetalingsdato |
+      | 24417337179     | 733740504    | -3572,00        | Person        | 24417337179 | Sorte Bill                | 2022-12-12      |
+      | 24417337179     | 733740504    | -3572,00        | Organisasjon  | 889640782   | Arbeids-og velferdsetaten | 2022-12-12      |
+
+    Og at følgende personer finnes i PDL:
+      | Ident       | Adressebeskyttelse | Navn       |
+      | 24417337179 | Ugradert           | Sorte Bill |
+
+    Når posteringer søkes etter med følgende kriterier:
+      | Periodetype        | Periode FOM | Periode TOM | Posteringskonto fra | Posteringskonto til |
+      | Utbetalingsperiode | 2022-12-01  | 2022-12-31  | 0000000             | 9999999             |
+
+    Så skal følgende posteringer returneres:
+      | Rettighetshaver | Bilagsnummer | Posteringsbeløp | Mottaker type | Mottaker    | Mottaker navn             | Utbetalingsdato |
+      | 24417337179     | 733740504    | -3572,00        | Person        | 24417337179 |                           | 2022-12-12      |
+      | 24417337179     | 733740504    | -3572,00        | Organisasjon  | 889640782   | Arbeids-og velferdsetaten | 2022-12-12      |
+
+
   Scenario: Saksbehandler med vanlig leserolle skal kunne søke opp posteringer for personer som ikke har adressebeskyttelse.
 
     Gitt en saksbehandler med følgende roller:
@@ -23,8 +70,8 @@ Egenskap: Søk posteringer
       | 24417337179     | Utbetalingsperiode | 2022-12-01  | 2022-12-31  |
 
     Så skal følgende posteringer returneres:
-      | Rettighetshaver | Navn     | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
-      | 24417337179     | Kon Kurs | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
+      | Rettighetshaver | Rettighetshaver navn | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
+      | 24417337179     | Kon Kurs             | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
 
 
   Scenario: Saksbehandler med vanlig leserolle skal ikke kunne søke opp posteringer for rettighetshavere med adressebeskyttelse.
@@ -49,7 +96,8 @@ Egenskap: Søk posteringer
 
 
   Scenario: Når saksbehandler med vanlig leserolle søker etter posteringer som ikke er på en enkeltperson,
-  så skal posteringer som tilhører personer med adressebeskyttelse filtreres bort fra søket.
+  så skal personer med adressebeskyttelse filtreres bort fra søket.
+
   TODO: Skal det også komme en feilmelding som forteller at noen personer ble filtrert bort?
 
     Gitt en saksbehandler med følgende roller:
@@ -71,8 +119,8 @@ Egenskap: Søk posteringer
       | Utbetalingsperiode | 2022-12-01  | 2022-12-31  | 0000000             | 9999999             |
 
     Så skal følgende posteringer returneres:
-      | Rettighetshaver | Navn | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
-      | 24417337179     |      | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
+      | Rettighetshaver | Rettighetshaver navn | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
+      | 24417337179     |                      | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
 
 
   Scenario: Saksbehandler med vanlig leserolle skal ikke kunne søke opp posteringer for mottakere med adressebeskyttelse.
@@ -116,8 +164,8 @@ Egenskap: Søk posteringer
       | 24417337179     | Utbetalingsperiode | 2022-12-01  | 2022-12-31  |
 
     Så skal følgende posteringer returneres:
-      | Rettighetshaver | Navn     | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
-      | 24417337179     | Kon Kurs | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
+      | Rettighetshaver | Rettighetshaver navn | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
+      | 24417337179     | Kon Kurs             | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
 
 
   Scenario: Saksbehandler med fortrolig rolle skal kunne søke opp posteringer for mottakere som er fortrolige
@@ -162,8 +210,8 @@ Egenskap: Søk posteringer
       | 24417337179     | Utbetalingsperiode | 2022-12-01  | 2022-12-31  |
 
     Så skal følgende posteringer returneres:
-      | Rettighetshaver | Navn     | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
-      | 24417337179     | Kon Kurs | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
+      | Rettighetshaver | Rettighetshaver navn | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
+      | 24417337179     | Kon Kurs             | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
 
 
 

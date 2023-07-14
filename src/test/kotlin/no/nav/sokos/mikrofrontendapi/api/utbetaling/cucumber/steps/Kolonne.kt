@@ -7,9 +7,11 @@ enum class Kolonne(val kolonnenavn: String) {
     ROLLE("Rolle"),
     RETTIGHETSHAVER("Rettighetshaver"),
     MOTTAKER("Mottaker"),
+    MOTTAKER_NAVN("Mottaker navn"),
     POSTERINGSBELØP("Posteringsbeløp"),
     BILAGSNUMMER ("Bilagsnummer"),
     IDENT ("Ident"),
+    RETTIGHETSHAVER_NAVN("Rettighetshaver navn"),
     NAVN("Navn"),
     ADRESSEBESKYTTELSE("Adressebeskyttelse"),
     PERIODETYPE("Periodetype"),
@@ -19,7 +21,8 @@ enum class Kolonne(val kolonnenavn: String) {
     ANSVARSSTED("Ansvarssted"),
     POSTERINGSKONTO_FRA("Posteringskonto fra"),
     POSTERINGSKONTO_TIL("Posteringskonto til"),
-    UTBETALINGSDATO("Utbetalingsdato")
+    UTBETALINGSDATO("Utbetalingsdato"),
+    MOTTAKER_TYPE("Mottaker type")
     ;
 
     companion object {

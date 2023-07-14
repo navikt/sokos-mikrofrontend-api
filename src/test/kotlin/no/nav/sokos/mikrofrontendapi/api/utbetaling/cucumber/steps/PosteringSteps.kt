@@ -162,12 +162,14 @@ private fun DataTable.tilPosteringer(): List<PosteringData> {
         val kolonneMapper = KolonneMapper(rad)
         val rettighetshaver = kolonneMapper.parseString(Kolonne.RETTIGHETSHAVER)
         val mottaker = kolonneMapper.parseString(Kolonne.MOTTAKER)
-        val navn = kolonneMapper.parseValgfriString(Kolonne.NAVN)
+        val mottakertype = kolonneMapper.parseAktørtype(Kolonne.MOTTAKER_TYPE)
+        val mottakerNavn = kolonneMapper.parseValgfriString(Kolonne.MOTTAKER_NAVN)
+        val rettighetshaverNavn = kolonneMapper.parseValgfriString(Kolonne.RETTIGHETSHAVER_NAVN)
         posteringDataTemplate.copy(
-            rettighetshaver = Aktoer(Aktoertype.PERSON, rettighetshaver, navn),
+            rettighetshaver = Aktoer(Aktoertype.PERSON, rettighetshaver, rettighetshaverNavn),
             bilagsnummer = kolonneMapper.parseString(Kolonne.BILAGSNUMMER),
             posteringsbeløp = DebetKreditBeløp.fraBigDecimal(kolonneMapper.parseBigDecimal(Kolonne.POSTERINGSBELØP)),
-            utbetalingsmottaker = Aktoer(Aktoertype.PERSON, mottaker, null),
+            utbetalingsmottaker = Aktoer(mottakertype, mottaker, mottakerNavn),
             utbetalingsdato = kolonneMapper.parseValgfriDato(Kolonne.UTBETALINGSDATO)
         )
     }

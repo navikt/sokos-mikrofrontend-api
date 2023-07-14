@@ -4,6 +4,7 @@ import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import no.nav.sokos.mikrofrontendapi.domene.AdressebeskyttelseGraderingData
+import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype
 
 class KolonneMapper(private val rad: Map<String, String>) {
@@ -43,4 +44,6 @@ class KolonneMapper(private val rad: Map<String, String>) {
         AdressebeskyttelseGraderingData.valueOf(parseString(kolonne).uppercase())
 
     fun parsePeriodetype(kolonne: Kolonne): Periodetype = Periodetype.valueOf(parseString(kolonne).uppercase())
+
+    fun parseAktørtype(kolonne: Kolonne): Aktoertype = parseValgfriString(kolonne)?.let { Aktoertype.valueOf(it.uppercase()) } ?: Aktoertype.PERSON
 }
