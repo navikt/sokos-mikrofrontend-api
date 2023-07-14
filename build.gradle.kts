@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.expediagroup.graphql.plugin.gradle.tasks.GraphQLGenerateClientTask
 
 
-val ktorVersion = "2.2.2"
+val ktorVersion = "2.3.2"
 val junitJupiterVersion = "5.9.1"
 val logbackVersion = "1.4.5"
 val logstashVersion = "7.2"
