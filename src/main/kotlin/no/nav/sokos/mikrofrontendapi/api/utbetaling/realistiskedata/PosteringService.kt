@@ -4,6 +4,7 @@ import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.pdl.PdlService
+import no.nav.sokos.mikrofrontendapi.personvern.PersonTilgangException
 import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
 import no.nav.sokos.mikrofrontendapi.security.Saksbehandler
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
@@ -19,6 +20,10 @@ class PosteringService(
 
     fun hentPosteringer(posteringSøkeData: PosteringSøkeData, saksbehandler: Saksbehandler): List<PosteringData> {
         val posteringer = posteringerMedNavnFraPdl(posteringSøkeData)
+        if (posteringer.isEmpty()) {
+            return emptyList()
+        }
+
         val identerBrukerHarTilgangTil = posteringer
             .map { it.rettighetshaver.ident }
             .toSet()
@@ -26,6 +31,12 @@ class PosteringService(
 
         val posteringerBrukerHarTilgangTil = posteringer
             .filter { identerBrukerHarTilgangTil.contains(it.rettighetshaver.ident) }
+
+        if (posteringSøkeData.rettighetshaver != null || posteringSøkeData.utbetalingsmottaker != null) {
+            if (posteringerBrukerHarTilgangTil.isEmpty()) {
+                throw PersonTilgangException()
+            }
+        }
 
         logger.info("Returnerer følgende data: $posteringerBrukerHarTilgangTil")
 

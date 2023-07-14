@@ -15,6 +15,7 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringSer
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringURServiceMockImpl
 import no.nav.sokos.mikrofrontendapi.domene.PersonData
 import no.nav.sokos.mikrofrontendapi.pdl.PdlServiceMockImpl
+import no.nav.sokos.mikrofrontendapi.personvern.PersonTilgangException
 import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
 import no.nav.sokos.mikrofrontendapi.security.Saksbehandler
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
@@ -53,6 +54,7 @@ class PosteringSteps : No {
     private val posteringURServiceMockImpl = PosteringURServiceMockImpl()
     private val pdlService = PdlServiceMockImpl()
     private val personvernPdlService = PersonvernPdlService(pdlService)
+    private var faktiskFeilmelding: String? = null
 
     private var posteringSøkeResultat = emptyList<PosteringData>()
 
@@ -86,13 +88,23 @@ class PosteringSteps : No {
         ) { dataTable: DataTable ->
             val posteringSøkeData = dataTable.tilPosteringSøkeData()
 
-            posteringSøkeResultat = posteringService.hentPosteringer(posteringSøkeData, saksbehandler)
+            try {
+                posteringSøkeResultat = posteringService.hentPosteringer(posteringSøkeData, saksbehandler)
+            } catch (personTilgangException: PersonTilgangException) {
+                faktiskFeilmelding = personTilgangException.message
+            }
         }
 
         Så(
             "skal følgende posteringer returneres:"
         ) { dataTable: DataTable ->
             assertThat(posteringSøkeResultat).containsExactlyInAnyOrderElementsOf(dataTable.tilPosteringer())
+        }
+
+        Så(
+            "skal følgende feilmelding gis: {string}"
+        ) { feilmelding: String ->
+            assertThat(faktiskFeilmelding).isEqualTo(feilmelding)
         }
     }
 }
