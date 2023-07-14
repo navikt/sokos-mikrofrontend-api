@@ -48,7 +48,9 @@ Egenskap: Søk posteringer
     Så skal følgende feilmelding gis: "Du har ikke tilgang til å søke opp denne personen."
 
 
-  Scenario: Saksbehandler med vanlig leserolle skal ikke kunne søke opp posteringer for mottakere med adressebeskyttelse.
+  Scenario: Når saksbehandler med vanlig leserolle søker etter posteringer som ikke er på en enkeltperson,
+  så skal posteringer som tilhører personer med adressebeskyttelse filtreres bort fra søket.
+  TODO: Skal det også komme en feilmelding som forteller at noen personer ble filtrert bort?
 
     Gitt en saksbehandler med følgende roller:
       | Rolle |
@@ -57,10 +59,36 @@ Egenskap: Søk posteringer
     Og at følgende posteringer finnes i UR:
       | Rettighetshaver | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
       | 24417337179     | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
+      | 29456545775     | 333740504    | -1200,00        | 29456545775 | 2022-12-12      |
+
+    Og at følgende personer finnes i PDL:
+      | Ident       | Adressebeskyttelse | Navn     |
+      | 24417337179 | Ugradert           | Kon Kurs |
+      | 29456545775 | FORTROLIG          | Kurs Kon |
+
+    Når posteringer søkes etter med følgende kriterier:
+      | Periodetype        | Periode FOM | Periode TOM | Posteringskonto fra | Posteringskonto til |
+      | Utbetalingsperiode | 2022-12-01  | 2022-12-31  | 0000000             | 9999999             |
+
+    Så skal følgende posteringer returneres:
+      | Rettighetshaver | Navn | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
+      | 24417337179     |      | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
+
+
+  Scenario: Saksbehandler med vanlig leserolle skal ikke kunne søke opp posteringer for mottakere med adressebeskyttelse.
+
+    Gitt en saksbehandler med følgende roller:
+      | Rolle |
+      | Les?? |
+
+    Og at følgende posteringer finnes i UR:
+      | Rettighetshaver | Bilagsnummer | Posteringsbeløp | Mottaker    | Utbetalingsdato |
+      | 29456545775     | 733740504    | -3572,00        | 24417337179 | 2022-12-12      |
 
     Og at følgende personer finnes i PDL:
       | Ident       | Adressebeskyttelse | Navn     |
       | 24417337179 | FORTROLIG          | Kon Kurs |
+      | 29456545775 | Ugradert           | Kurs Kon |
 
     Når posteringer søkes etter med følgende kriterier:
       | Mottaker    | Periodetype        | Periode FOM | Periode TOM |

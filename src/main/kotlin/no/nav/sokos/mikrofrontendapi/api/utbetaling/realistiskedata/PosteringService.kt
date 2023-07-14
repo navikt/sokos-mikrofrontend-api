@@ -24,13 +24,20 @@ class PosteringService(
             return emptyList()
         }
 
-        val identerBrukerHarTilgangTil = posteringer
+        val rettighetshavereBrukerHarTilgangTil = posteringer
             .map { it.rettighetshaver.ident }
             .toSet()
             .filter{ personvernPdlService.kanBrukerSePerson(it, saksbehandler)}
 
+        val mottakereBrukerHarTilgangTil = posteringer
+        .map { it.utbetalingsmottaker}
+            .toSet()
+            .filter{  it.aktoertype == Aktoertype.ORGANISASJON || personvernPdlService.kanBrukerSePerson(it.ident, saksbehandler)}
+            .map{ it.ident }
+
         val posteringerBrukerHarTilgangTil = posteringer
-            .filter { identerBrukerHarTilgangTil.contains(it.rettighetshaver.ident) }
+            .filter { rettighetshavereBrukerHarTilgangTil.contains(it.rettighetshaver.ident) }
+            .filter { mottakereBrukerHarTilgangTil.contains(it.utbetalingsmottaker.ident)}
 
         if (posteringSøkeData.rettighetshaver != null || posteringSøkeData.utbetalingsmottaker != null) {
             if (posteringerBrukerHarTilgangTil.isEmpty()) {

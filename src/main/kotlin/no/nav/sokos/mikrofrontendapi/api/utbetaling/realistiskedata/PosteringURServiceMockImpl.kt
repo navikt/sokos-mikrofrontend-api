@@ -11,7 +11,7 @@ class PosteringURServiceMockImpl(var posteringer: List<PosteringData> = emptyLis
         val posteringskontoTil = posteringSøkeData.posteringskontoTil ?: posteringSøkeData.posteringskontoFra
         return posteringer
             .filter { posteringSøkeData.rettighetshaver?.equals(it.rettighetshaver.ident) ?: true }
-            .filter { posteringSøkeData.utbetalingsmottaker?.equals(it.rettighetshaver.ident) ?: true }
+            .filter { posteringSøkeData.utbetalingsmottaker?.equals(it.utbetalingsmottaker.ident) ?: true }
             .filter { posteringSøkeData.ansvarssted?.equals(it.ansvarssted) ?: true }
             .filter { posteringSøkeData.kostnadssted?.equals(it.kostnadssted) ?: true }
             .filter { posteringSøkeData.posteringskontoFra == null || it.posteringskonto.kontonummer >= posteringSøkeData.posteringskontoFra }
