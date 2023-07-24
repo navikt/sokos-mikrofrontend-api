@@ -14,7 +14,7 @@ val natpryceVersion = "1.6.10.0"
 val kotlinLoggingVersion = "3.0.4"
 val graphqlClientVersion = "7.0.0-alpha.0"
 val cucumberVersion = "7.11.0"
-val junit_version= "5.9.0"
+val junit_version= "5.10.0"
 val mockk_version= "1.13.4"
 val assertj_version = "3.24.2"
 
