@@ -4,11 +4,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.expediagroup.graphql.plugin.gradle.tasks.GraphQLGenerateClientTask
 
 
-val ktorVersion = "2.2.2"
+val ktorVersion = "2.3.2"
 val junitJupiterVersion = "5.10.0"
 val logbackVersion = "1.4.5"
 val logstashVersion = "7.4"
-val jacksonVersion = "2.14.1"
+val jacksonVersion = "2.15.2"
 val prometheusVersion = "1.11.2"
 val natpryceVersion = "1.6.10.0"
 val kotlinLoggingVersion = "3.0.4"
@@ -19,7 +19,7 @@ val mockk_version= "1.13.4"
 val assertj_version = "3.24.2"
 
 plugins {
-    kotlin("jvm") version "1.8.0"
+    kotlin("jvm") version "1.9.0"
     kotlin("plugin.serialization") version "1.9.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("com.expediagroup.graphql") version "6.5.3"
