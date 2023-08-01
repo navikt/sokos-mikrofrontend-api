@@ -7,7 +7,7 @@ import com.expediagroup.graphql.plugin.gradle.tasks.GraphQLGenerateClientTask
 val ktorVersion = "2.2.2"
 val junitJupiterVersion = "5.10.0"
 val logbackVersion = "1.4.5"
-val logstashVersion = "7.2"
+val logstashVersion = "7.4"
 val jacksonVersion = "2.14.1"
 val prometheusVersion = "1.11.2"
 val natpryceVersion = "1.6.10.0"
