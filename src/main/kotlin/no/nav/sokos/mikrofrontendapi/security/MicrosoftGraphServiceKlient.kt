@@ -31,7 +31,6 @@ class MicrosoftGraphServiceKlient(
             logger.info { "Respons fra MSGraph: $respons" }
             if(respons.status == HttpStatusCode.OK){
                 val body: MedlemAv = respons.body<MedlemAv>()
-                logger.info { "Body fra MSGraph: $body" }
                 return body.rolles
             }
         }
