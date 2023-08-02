@@ -12,6 +12,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import java.net.URL
 import mu.KotlinLogging
+import no.nav.sokos.mikrofrontendapi.SECURE_LOGGER_NAME
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.HentPosteringResponse
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.summer
@@ -29,6 +30,7 @@ import no.nav.sokos.mikrofrontendapi.security.TilgangService
 import no.nav.sokos.mikrofrontendapi.util.httpClient
 
 private val logger = KotlinLogging.logger {}
+private val secureLogger = KotlinLogging.logger(SECURE_LOGGER_NAME)
 
 object UtbetalingApi {
     private val posteringURService = PosteringURServiceMockImpl(CsvLeser().lesFil("/mockposteringer.csv"))
@@ -59,7 +61,7 @@ object UtbetalingApi {
 
                 post("/hentPostering") {
                     val posteringSøkeData: PosteringSøkeData = call.receive()
-                    logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
+                    secureLogger.info("Henter postering for ${posteringSøkeData.tilJson()}")
                     val saksbehandler = tilgangService.hentSaksbehandler(call)
                     val posteringer =  posteringService.hentPosteringer(posteringSøkeData, saksbehandler)
 
@@ -68,14 +70,14 @@ object UtbetalingApi {
                     } else {
                         val posteringSumData = posteringer.summer()
                         val response = HentPosteringResponse(posteringer, posteringSumData)
-                        logger.info("Returnerer følgende response: ${response.tilJson()}")
+                        secureLogger.info("Returnerer følgende response: ${response.tilJson()}")
                         call.respond(HttpStatusCode.OK, response)
                     }
                 }
 
                 post("/tilCsv") {
                     val posteringSøkeData: PosteringSøkeData = call.receive()
-                    logger.info("Henter postering for ${posteringSøkeData.tilJson()}")
+                    secureLogger.info("Henter postering for ${posteringSøkeData.tilJson()}")
 
                     val saksbehandler = tilgangService.hentSaksbehandler(call)
                     val posteringer =  posteringService.hentPosteringer(posteringSøkeData, saksbehandler)
@@ -84,7 +86,7 @@ object UtbetalingApi {
                         call.respond(HttpStatusCode.NoContent)
                     } else {
                         val csv = posteringer.tilCsv()
-                        logger.info("Returnerer følgende CSV: $csv")
+                        secureLogger.info("Returnerer følgende CSV: $csv")
                         call.respondText(csv, ContentType.Text.CSV, HttpStatusCode.OK)
                     }
                 }

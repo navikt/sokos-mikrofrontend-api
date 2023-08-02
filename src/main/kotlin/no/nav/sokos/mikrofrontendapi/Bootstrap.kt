@@ -14,6 +14,7 @@ import no.nav.sokos.mikrofrontendapi.metrics.appStateRunningFalse
 import kotlin.properties.Delegates
 
 val appConfig = PropertiesConfig.Configuration()
+const val SECURE_LOGGER_NAME = "secureLogger"
 
 fun main() {
     val applicationState = ApplicationState()

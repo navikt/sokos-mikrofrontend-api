@@ -1,6 +1,5 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata
 
-import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.pdl.PdlService
@@ -9,8 +8,6 @@ import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
 import no.nav.sokos.mikrofrontendapi.security.Saksbehandler
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 
-
-private val logger = KotlinLogging.logger {}
 
 class PosteringService(
     private val posteringUrService: PosteringUrService,
@@ -44,8 +41,6 @@ class PosteringService(
                 throw PersonTilgangException()
             }
         }
-
-        logger.info("Returnerer følgende data: $posteringerBrukerHarTilgangTil")
 
         return posteringerBrukerHarTilgangTil
     }
