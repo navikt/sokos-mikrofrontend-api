@@ -1,6 +1,6 @@
 package no.nav.sokos.mikrofrontendapi.nom
 
-class SkjermetClientMockImpl(private val skjermedePersoner: List<String>)
+class SkjermetClientMockImpl(var skjermedePersoner: List<String>)
     : SkjermetClient {
 
     override suspend fun erPersonSkjermet(personIdent: String): Boolean {

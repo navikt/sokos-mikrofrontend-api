@@ -57,9 +57,7 @@ class PosteringSteps : No {
     private val posteringURServiceMockImpl = PosteringURServiceMockImpl()
     private val pdlService = PdlServiceMockImpl()
     private val personvernPdlService = PersonvernPdlService(pdlService)
-    private var skjermedePersoner = emptyList<String>()
-
-    private val skjermetClient = SkjermetClientMockImpl(skjermedePersoner)
+    private val skjermetClient = SkjermetClientMockImpl(emptyList())
 
     private val skjermetService = SkjermetServiceImpl(skjermetClient)
     private var faktiskFeilmelding: String? = null
@@ -91,15 +89,16 @@ class PosteringSteps : No {
 
         Gitt(
             "at følgende personer finnes i PDL:"
-        ) { dataTable: DataTable ->
-            pdlService.setPersoner(dataTable.tilPersoner())
-        }
+        ) { dataTable: DataTable -> pdlService.setPersoner(dataTable.tilPersoner()) }
+
+        Gitt(
+            "at følgende personer er skjermet:"
+        ) { dataTable: DataTable -> skjermetClient.skjermedePersoner = dataTable.tilIdenter() }
 
         Når(
             "posteringer søkes etter med følgende kriterier:"
         ) { dataTable: DataTable ->
             val posteringSøkeData = dataTable.tilPosteringSøkeData()
-
 
             try {
                 posteringSøkeResultat = posteringService.hentPosteringer(posteringSøkeData, saksbehandler)
@@ -155,6 +154,15 @@ private fun DataTable.tilPersoner(): List<PersonData> {
             kolonneMapper.parseString(Kolonne.NAVN),
             kolonneMapper.parseAdressebeskyttelse(Kolonne.ADRESSEBESKYTTELSE)
         )
+    }
+}
+
+private fun DataTable.tilIdenter(): List<String> {
+    Kolonne.validerAtKolonnenavnErGyldig(this)
+
+    return asMaps().map { rad ->
+        val kolonneMapper = KolonneMapper(rad)
+        kolonneMapper.parseString(Kolonne.IDENT)
     }
 }
 
