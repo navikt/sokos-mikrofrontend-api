@@ -1,12 +1,10 @@
 package no.nav.sokos.mikrofrontendapi.nom
 
 import io.ktor.client.HttpClient
-import io.ktor.client.request.accept
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
@@ -21,13 +19,13 @@ import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
  */
 class SkjermetClientImpl(
     private val httpClient: HttpClient,
-    private val nomUrl: String,
-    private val nomClientId: String,
+    private val skjermingUrl: String,
+    private val skjermingClientId: String,
     private val accessTokenProvider: AzureAdClient?): SkjermetClient {
 
     override suspend fun erPersonSkjermet(personIdent: String) : Boolean {
-        val token = accessTokenProvider?.getSystemToken(nomClientId)
-        val skjermetUrl = "${nomUrl}/skjermet"
+        val token = accessTokenProvider?.getSystemToken(skjermingClientId)
+        val skjermetUrl = "${skjermingUrl}/skjermet"
 
         val response = httpClient.post(skjermetUrl) {
             method = HttpMethod.Post
