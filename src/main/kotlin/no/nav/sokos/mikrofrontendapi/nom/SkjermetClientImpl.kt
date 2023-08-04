@@ -5,9 +5,12 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
+
 
 /**
  * Oppslag mot PIP-tjenesten til skjermingsløsningen for å sjekke om en person er skjermet.
@@ -29,6 +32,7 @@ class SkjermetClientImpl(
 
         val response = httpClient.post(skjermetUrl) {
             method = HttpMethod.Post
+            contentType(ContentType.Application.Json)
             setBody(SkjermetPersonRequest(personIdent))
             header("Authorization", token)
         }
