@@ -23,8 +23,11 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringURS
 import no.nav.sokos.mikrofrontendapi.appConfig
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
 import no.nav.sokos.mikrofrontendapi.config.authenticate
+import no.nav.sokos.mikrofrontendapi.nom.SkjermetClientImpl
 import no.nav.sokos.mikrofrontendapi.pdl.PdlServiceImpl
 import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
+import no.nav.sokos.mikrofrontendapi.personvern.PersonvernService
+import no.nav.sokos.mikrofrontendapi.personvern.SkjermetServiceImpl
 import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
 import no.nav.sokos.mikrofrontendapi.security.TilgangService
 import no.nav.sokos.mikrofrontendapi.util.httpClient
@@ -53,7 +56,17 @@ object UtbetalingApi {
     private val tilgangService = TilgangService(accessTokenProvider)
     private val personvernPdlService = PersonvernPdlService(pdlService)
 
-    private val posteringService = PosteringService(posteringURService, pdlService, personvernPdlService)
+    private val skjermetClient = SkjermetClientImpl(
+        httpClient = httpClient,
+        nomUrl = appConfig.nomUrl,
+        nomClientId = appConfig.azureAdProviderConfig.nomClientId,
+        accessTokenProvider = accessTokenProvider
+    )
+
+    private val skjermetService = SkjermetServiceImpl(skjermetClient)
+    private val personvernService = PersonvernService(personvernPdlService, skjermetService)
+    private val posteringService = PosteringService(posteringURService, pdlService, personvernService)
+
 
     fun Routing.ruteForUtbetaling(useAuthentication: Boolean) {
         authenticate(useAuthentication, AUTHENTICATION_NAME) {
@@ -61,6 +74,7 @@ object UtbetalingApi {
 
                 post("/hentPostering") {
                     val posteringSøkeData: PosteringSøkeData = call.receive()
+                    logger.info("Henter postering")
                     secureLogger.info("Henter postering for ${posteringSøkeData.tilJson()}")
                     val saksbehandler = tilgangService.hentSaksbehandler(call)
                     val posteringer =  posteringService.hentPosteringer(posteringSøkeData, saksbehandler)

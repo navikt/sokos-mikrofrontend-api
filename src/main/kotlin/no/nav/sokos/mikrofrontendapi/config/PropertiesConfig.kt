@@ -49,7 +49,8 @@ object PropertiesConfig {
         val useAuthentication: Boolean = get("USE_AUTHENTICATION").toBoolean(),
         val azureAdConfig: AzureAdConfig = AzureAdConfig(),
         val azureAdProviderConfig: AzureAdProviderConfig = AzureAdProviderConfig(),
-        val pdlUrl: String = readProperty("PDL_URL")
+        val pdlUrl: String = readProperty("PDL_URL"),
+        val nomUrl: String = readProperty("NOM_URL")
     )
 
     class AzureAdConfig(
@@ -63,6 +64,7 @@ object PropertiesConfig {
         val tenant: String = readProperty("AZURE_APP_TENANT_ID", ""),
         val clientSecret: String = readProperty("AZURE_APP_CLIENT_SECRET", ""),
         val pdlClientId: String = readProperty("PDL_CLIENT_ID", ""),
+        val nomClientId: String = readProperty("NOM_CLIENT_ID", ""),
         val useSecurity: Boolean = readProperty("PDL_USE_SECURITY", "true") == "true",
         val tokenUrl: String = readProperty("TOKEN_URL", "https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token"),
     )

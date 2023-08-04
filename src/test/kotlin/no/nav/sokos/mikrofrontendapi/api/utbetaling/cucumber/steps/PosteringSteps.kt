@@ -14,9 +14,12 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringsstatus
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringService
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringURServiceMockImpl
 import no.nav.sokos.mikrofrontendapi.domene.PersonData
+import no.nav.sokos.mikrofrontendapi.nom.SkjermetClientMockImpl
 import no.nav.sokos.mikrofrontendapi.pdl.PdlServiceMockImpl
 import no.nav.sokos.mikrofrontendapi.personvern.PersonTilgangException
 import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
+import no.nav.sokos.mikrofrontendapi.personvern.PersonvernService
+import no.nav.sokos.mikrofrontendapi.personvern.SkjermetServiceImpl
 import no.nav.sokos.mikrofrontendapi.security.Saksbehandler
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
@@ -54,14 +57,23 @@ class PosteringSteps : No {
     private val posteringURServiceMockImpl = PosteringURServiceMockImpl()
     private val pdlService = PdlServiceMockImpl()
     private val personvernPdlService = PersonvernPdlService(pdlService)
+    private var skjermedePersoner = emptyList<String>()
+
+    private val skjermetClient = SkjermetClientMockImpl(skjermedePersoner)
+
+    private val skjermetService = SkjermetServiceImpl(skjermetClient)
     private var faktiskFeilmelding: String? = null
 
+    private val personvernService = PersonvernService(personvernPdlService, skjermetService)
+
     private var posteringSøkeResultat = emptyList<PosteringData>()
+
+
 
     private val posteringService = PosteringService(
         posteringURServiceMockImpl,
         pdlService,
-        personvernPdlService
+        personvernService
     )
 
     init {
@@ -87,6 +99,7 @@ class PosteringSteps : No {
             "posteringer søkes etter med følgende kriterier:"
         ) { dataTable: DataTable ->
             val posteringSøkeData = dataTable.tilPosteringSøkeData()
+
 
             try {
                 posteringSøkeResultat = posteringService.hentPosteringer(posteringSøkeData, saksbehandler)

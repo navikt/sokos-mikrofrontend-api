@@ -4,7 +4,7 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.pdl.PdlService
 import no.nav.sokos.mikrofrontendapi.personvern.PersonTilgangException
-import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
+import no.nav.sokos.mikrofrontendapi.personvern.PersonvernService
 import no.nav.sokos.mikrofrontendapi.security.Saksbehandler
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 
@@ -12,7 +12,7 @@ import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 class PosteringService(
     private val posteringUrService: PosteringUrService,
     private val pdlService: PdlService,
-    private val personvernPdlService: PersonvernPdlService
+    private val personvernService: PersonvernService
 ) {
 
     fun hentPosteringer(posteringSøkeData: PosteringSøkeData, saksbehandler: Saksbehandler): List<PosteringData> {
@@ -21,20 +21,7 @@ class PosteringService(
             return emptyList()
         }
 
-        val rettighetshavereBrukerHarTilgangTil = posteringer
-            .map { it.rettighetshaver.ident }
-            .toSet()
-            .filter{ personvernPdlService.kanBrukerSePerson(it, saksbehandler)}
-
-        val mottakereBrukerHarTilgangTil = posteringer
-        .map { it.utbetalingsmottaker}
-            .toSet()
-            .filter{  it.aktoertype == Aktoertype.ORGANISASJON || personvernPdlService.kanBrukerSePerson(it.ident, saksbehandler)}
-            .map{ it.ident }
-
-        val posteringerBrukerHarTilgangTil = posteringer
-            .filter { rettighetshavereBrukerHarTilgangTil.contains(it.rettighetshaver.ident) }
-            .filter { mottakereBrukerHarTilgangTil.contains(it.utbetalingsmottaker.ident)}
+        val posteringerBrukerHarTilgangTil = personvernService.filtrerPosteringer(posteringer, saksbehandler)
 
         if (posteringSøkeData.rettighetshaver != null || posteringSøkeData.utbetalingsmottaker != null) {
             if (posteringerBrukerHarTilgangTil.isEmpty()) {
