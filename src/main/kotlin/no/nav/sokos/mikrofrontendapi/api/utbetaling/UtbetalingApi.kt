@@ -59,7 +59,7 @@ object UtbetalingApi {
     private val skjermetClient = SkjermetClientImpl(
         httpClient = httpClient,
         nomUrl = appConfig.nomUrl,
-        nomClientId = appConfig.azureAdProviderConfig.nomClientId,
+        nomClientId = appConfig.azureAdProviderConfig.skjermingClientId,
         accessTokenProvider = accessTokenProvider
     )
 
