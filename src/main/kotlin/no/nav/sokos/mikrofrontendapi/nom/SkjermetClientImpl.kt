@@ -27,9 +27,9 @@ class SkjermetClientImpl(
 
     override suspend fun erPersonSkjermet(personIdent: String) : Boolean {
         val token = accessTokenProvider?.getSystemToken(nomClientId)
+        val skjermetUrl = nomUrl + "${nomUrl}/skjermet"
 
-        val response = httpClient.post(nomUrl) {
-            accept(ContentType.Application.Json)
+        val response = httpClient.post(skjermetUrl) {
             method = HttpMethod.Post
             setBody(SkjermetPersonRequest(personIdent))
             header("Authorization", token)
