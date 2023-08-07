@@ -18,7 +18,6 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.summer
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.tilCsv
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.CsvLeser
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringService
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringURServiceMockImpl
 import no.nav.sokos.mikrofrontendapi.appConfig
 import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME

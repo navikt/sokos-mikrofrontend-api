@@ -6,9 +6,9 @@ Egenskap: Det er et personvernkrav at bare saksbehandlere med spesielle roller s
   som har adressebeskyttelse i PDL.
 
   Følgende nivåer av adressebeskyttelse finnes i PDL:
-    * Fortolig
-    * Strengt fortolig
-    * Strengt fortrolig utland
+  * Fortolig
+  * Strengt fortolig
+  * Strengt fortrolig utland
 
 
   Scenario: Saksbehandler med vanlig leserolle skal kunne søke opp posteringer for personer som ikke har adressebeskyttelse.

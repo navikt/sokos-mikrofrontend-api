@@ -2,14 +2,9 @@
 # encoding: UTF-8
 
 
-Egenskap: Det er et personvernkrav at bare saksbehandlere med spesielle roller skal kunne se posteringer for personer
-  som har adressebeskyttelse i PDL.
+Egenskap: Skjerming av egne ansatte
 
-  Følgende nivåer av adressebeskyttelse finnes i PDL:
-  * Fortolig
-  * Strengt fortolig
-  * Strengt fortrolig utland
-
+  Bare saksbehandlere med rollen "egen ansatt" skal kunne søke opp posteringer for skjermede personer.
 
   Scenario: Saksbehandler med vanlig leserolle skal kunne søke opp posteringer for personer som ikke er skjermet.
 

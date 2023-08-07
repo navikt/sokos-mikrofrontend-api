@@ -11,7 +11,7 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringskonto
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringsstatus
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringService
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.PosteringService
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringURServiceMockImpl
 import no.nav.sokos.mikrofrontendapi.domene.PersonData
 import no.nav.sokos.mikrofrontendapi.nom.SkjermetClientMockImpl
