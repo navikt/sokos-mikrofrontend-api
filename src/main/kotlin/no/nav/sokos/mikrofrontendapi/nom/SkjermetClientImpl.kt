@@ -9,8 +9,11 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import mu.KotlinLogging
 import no.nav.sokos.mikrofrontendapi.security.AzureAdClient
 
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Oppslag mot PIP-tjenesten til skjermingsløsningen for å sjekke om en person er skjermet.
@@ -28,13 +31,16 @@ class SkjermetClientImpl(
 
     override suspend fun erPersonSkjermet(personIdent: String) : Boolean {
         val token = accessTokenProvider?.getSystemToken(skjermingClientId)
+
+        // TODO: Ta bort logging av token
+        logger.info("Token: $token")
         val skjermetUrl = "${skjermingUrl}/skjermet"
 
         val response = httpClient.post(skjermetUrl) {
             method = HttpMethod.Post
             contentType(ContentType.Application.Json)
             setBody(SkjermetPersonRequest(personIdent))
-            header("Authorization", token)
+            header("Authorization", "Bearer $token")
         }
 
         if (response.status != HttpStatusCode.OK) {
