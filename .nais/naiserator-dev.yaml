@@ -55,9 +55,9 @@ spec:
     outbound:
       external:
         - host: pdl-api.dev-fss-pub.nais.io
+        - host: skjermede-personer-pip.intern.dev.nav.no
       rules:
       - application: skjermede-personer-pip
-        cluster: dev-gcp
         namespace: nom
   env:
     - name: USE_AUTHENTICATION
