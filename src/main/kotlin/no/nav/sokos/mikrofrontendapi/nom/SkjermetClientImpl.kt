@@ -35,6 +35,7 @@ class SkjermetClientImpl(
         // TODO: Ta bort logging av token
         logger.info("Token: $token")
         val skjermetUrl = "${skjermingUrl}/skjermet"
+        logger.info("SkjermetUrl: $skjermetUrl")
 
         val response = httpClient.post(skjermetUrl) {
             method = HttpMethod.Post
