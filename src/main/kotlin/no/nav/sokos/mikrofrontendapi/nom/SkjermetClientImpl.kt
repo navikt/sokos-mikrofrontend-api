@@ -30,7 +30,7 @@ class SkjermetClientImpl(
     private val accessTokenProvider: AzureAdClient?): SkjermetClient {
 
     override suspend fun erPersonSkjermet(personIdent: String) : Boolean {
-        val token = accessTokenProvider?.getSystemToken(skjermingClientId)
+        val token = accessTokenProvider?.getSystemToken(skjermingClientId)?.accessToken
 
         // TODO: Ta bort logging av token
         logger.info("Token: $token")
