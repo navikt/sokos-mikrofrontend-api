@@ -13,6 +13,7 @@ class TilgangService(private val accessTokenProvider: AzureAdClient?) {
     suspend fun hentSaksbehandler(call: ApplicationCall): Saksbehandler {
         val oboToken = call.request.headers["Authorization"]?.removePrefix("Bearer ")
             ?: throw IllegalStateException("Greier ikke hente token fra request header")
+        println("oboToken::::::: $oboToken")
         val navIdent = getNAVIdentFromToken(oboToken)
 
         return Saksbehandler(navIdent, hentBrukerRoller(oboToken).map{it.name})
