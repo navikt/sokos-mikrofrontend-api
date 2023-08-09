@@ -45,7 +45,7 @@ spec:
         extra:
           - NAVident
         groups:
-          - id: b01fb216-fcb3-4ede-b7da-71fffe859763
+          - id: a366c33c-7456-4183-a0d5-80eb8195a7da # 0000-GA-SOKOS-MF-Utbetalinger-WRITE
   accessPolicy:
     inbound:
       rules:
