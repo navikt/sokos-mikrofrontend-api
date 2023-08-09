@@ -22,7 +22,7 @@ object PropertiesConfig {
 
     private val localDevProperties = ConfigurationMap(
         mapOf(
-            "USE_AUTHENTICATION" to "true",
+            "USE_AUTHENTICATION" to "false",
             "APPLICATION_PROFILE" to Profile.LOCAL.toString(),
             "AZURE_APP_CLIENT_ID" to "azure-app-client-id",
             "AZURE_APP_WELL_KNOWN_URL" to "azure-app-well-known-url",
@@ -49,8 +49,6 @@ object PropertiesConfig {
         val useAuthentication: Boolean = get("USE_AUTHENTICATION").toBoolean(),
         val azureAdConfig: AzureAdConfig = AzureAdConfig(),
         val azureAdProviderConfig: AzureAdProviderConfig = AzureAdProviderConfig(),
-        val pdlUrl: String = readProperty("PDL_URL"),
-        val skjermingUrl: String = readProperty("SKJERMING_URL")
     )
 
     class AzureAdConfig(
@@ -63,10 +61,6 @@ object PropertiesConfig {
         val authorityEndpoint: String = readProperty("AZURE_APP_WELL_KNOWN_URL", ""),
         val tenant: String = readProperty("AZURE_APP_TENANT_ID", ""),
         val clientSecret: String = readProperty("AZURE_APP_CLIENT_SECRET", ""),
-        val pdlClientId: String = readProperty("PDL_CLIENT_ID", ""),
-        val skjermingClientId: String = readProperty("SKJERMING_CLIENT_ID", ""),
-        val useSecurity: Boolean = readProperty("PDL_USE_SECURITY", "true") == "true",
-        val tokenUrl: String = readProperty("TOKEN_URL", "https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token"),
     )
 
 

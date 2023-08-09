@@ -1,7 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.expediagroup.graphql.plugin.gradle.tasks.GraphQLGenerateClientTask
 
 
 val ktorVersion = "2.3.2"
@@ -12,17 +10,11 @@ val jacksonVersion = "2.15.2"
 val prometheusVersion = "1.11.2"
 val natpryceVersion = "1.6.10.0"
 val kotlinLoggingVersion = "3.0.4"
-val graphqlClientVersion = "7.0.0-alpha.0"
-val cucumberVersion = "7.13.0"
-val junit_version= "5.10.0"
-val mockk_version= "1.13.4"
-val assertj_version = "3.24.2"
 
 plugins {
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.serialization") version "1.9.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("com.expediagroup.graphql") version "6.5.3"
 }
 
 group = "no.nav.sokos"
@@ -65,27 +57,6 @@ dependencies {
 
     // Config
     implementation("com.natpryce:konfig:$natpryceVersion")
-
-    // PDL grapql
-    implementation("com.expediagroup:graphql-kotlin-ktor-client:$graphqlClientVersion")
-    {
-        exclude(group = "com.expediagroup", module = "graphql-kotlin-client-serialization")
-    }
-    implementation("com.expediagroup:graphql-kotlin-client-jackson:$graphqlClientVersion")
-
-    // Test
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitJupiterVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
-    testImplementation("io.mockk:mockk:$mockk_version")
-    testImplementation("org.assertj:assertj-core:$assertj_version")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
-
-    // Avhengigheter for Cucumber-tester
-    testImplementation("io.cucumber:cucumber-junit:$cucumberVersion")
-    testImplementation("io.cucumber:cucumber-java8:$cucumberVersion")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:$junit_version")
 }
 
 
@@ -106,26 +77,7 @@ tasks {
         enabled = false
     }
 
-
-    withType<Test>().configureEach {
-        useJUnitPlatform()
-        testLogging {
-            exceptionFormat = FULL
-            events("passed", "skipped", "failed")
-        }
-
-        // For å øke hastigheten på build kan vi benytte disse metodene
-        maxParallelForks = Runtime.getRuntime().availableProcessors() / 2
-        reports.forEach { report -> report.required.value(false) }
-    }
-
     withType<Wrapper>().configureEach {
         gradleVersion = "7.6"
     }
-}
-
-val graphqlGenerateClient by tasks.getting(GraphQLGenerateClientTask::class) {
-    packageName.set("no.nav.pdl")
-    schemaFile.set(file("${project.projectDir}/src/main/resources/graphql/pdl.graphqls"))
-    queryFileDirectory.set(file("${project.projectDir}/src/main/resources/graphql"))
 }

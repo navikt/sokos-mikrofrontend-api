@@ -4,7 +4,7 @@ import io.micrometer.prometheus.PrometheusConfig
 import io.micrometer.prometheus.PrometheusMeterRegistry
 import io.prometheus.client.Counter
 
-private const val NAMESPACE = "sokos_oppdragproxy"
+private const val NAMESPACE = "sokos_mikrofrontendapi"
 
 val prometheusRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 

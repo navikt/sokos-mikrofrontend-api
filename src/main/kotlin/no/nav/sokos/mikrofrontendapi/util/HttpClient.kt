@@ -25,7 +25,6 @@ val httpClient = HttpClient(Apache) {
         retryOnServerErrors(maxRetries = 3)
         delayMillis { retry -> retry * 3000L }
     }
-
     engine {
         customizeClient {
             setRoutePlanner(SystemDefaultRoutePlanner(ProxySelector.getDefault()))

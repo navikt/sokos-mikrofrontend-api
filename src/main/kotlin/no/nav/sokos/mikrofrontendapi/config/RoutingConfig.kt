@@ -8,7 +8,6 @@ import no.nav.sokos.mikrofrontendapi.ApplicationState
 import no.nav.sokos.mikrofrontendapi.api.employeeApi
 import no.nav.sokos.mikrofrontendapi.api.metricsApi
 import no.nav.sokos.mikrofrontendapi.api.naisApi
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.UtbetalingApi.ruteForUtbetaling
 
 
 fun Application.configureRouting(
@@ -19,7 +18,6 @@ fun Application.configureRouting(
         naisApi({ applicationState.initialized }, { applicationState.running })
         metricsApi()
         employeeApi(useAuthentication)
-        ruteForUtbetaling(useAuthentication)
     }
 }
 
