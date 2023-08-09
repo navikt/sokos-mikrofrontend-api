@@ -40,7 +40,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Bygg og test shadowJar
-        run: ./gradlew test shadowJar
+        run: ./gradlew build shadowJar
         env:
           ORG_GRADLE_PROJECT_githubUser: x-access-token
           ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
