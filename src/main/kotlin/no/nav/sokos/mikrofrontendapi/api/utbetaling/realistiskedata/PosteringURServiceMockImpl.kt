@@ -1,5 +1,6 @@
 package no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata
 
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.PosteringUrService
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periodetype

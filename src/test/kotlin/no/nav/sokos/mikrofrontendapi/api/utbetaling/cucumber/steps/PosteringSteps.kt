@@ -11,12 +11,15 @@ import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringskonto
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.Posteringsstatus
-import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringService
+import no.nav.sokos.mikrofrontendapi.api.utbetaling.PosteringService
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata.PosteringURServiceMockImpl
 import no.nav.sokos.mikrofrontendapi.domene.PersonData
+import no.nav.sokos.mikrofrontendapi.nom.SkjermetClientMockImpl
 import no.nav.sokos.mikrofrontendapi.pdl.PdlServiceMockImpl
 import no.nav.sokos.mikrofrontendapi.personvern.PersonTilgangException
 import no.nav.sokos.mikrofrontendapi.personvern.PersonvernPdlService
+import no.nav.sokos.mikrofrontendapi.personvern.PersonvernService
+import no.nav.sokos.mikrofrontendapi.personvern.SkjermetServiceImpl
 import no.nav.sokos.mikrofrontendapi.security.Saksbehandler
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Aktoertype
 import no.nav.sokos.utbetaldata.api.utbetaling.entitet.Periode
@@ -54,14 +57,21 @@ class PosteringSteps : No {
     private val posteringURServiceMockImpl = PosteringURServiceMockImpl()
     private val pdlService = PdlServiceMockImpl()
     private val personvernPdlService = PersonvernPdlService(pdlService)
+    private val skjermetClient = SkjermetClientMockImpl(emptyList())
+
+    private val skjermetService = SkjermetServiceImpl(skjermetClient)
     private var faktiskFeilmelding: String? = null
 
+    private val personvernService = PersonvernService(personvernPdlService, skjermetService)
+
     private var posteringSøkeResultat = emptyList<PosteringData>()
+
+
 
     private val posteringService = PosteringService(
         posteringURServiceMockImpl,
         pdlService,
-        personvernPdlService
+        personvernService
     )
 
     init {
@@ -79,9 +89,11 @@ class PosteringSteps : No {
 
         Gitt(
             "at følgende personer finnes i PDL:"
-        ) { dataTable: DataTable ->
-            pdlService.setPersoner(dataTable.tilPersoner())
-        }
+        ) { dataTable: DataTable -> pdlService.setPersoner(dataTable.tilPersoner()) }
+
+        Gitt(
+            "at følgende personer er skjermet:"
+        ) { dataTable: DataTable -> skjermetClient.skjermedePersoner = dataTable.tilIdenter() }
 
         Når(
             "posteringer søkes etter med følgende kriterier:"
@@ -142,6 +154,15 @@ private fun DataTable.tilPersoner(): List<PersonData> {
             kolonneMapper.parseString(Kolonne.NAVN),
             kolonneMapper.parseAdressebeskyttelse(Kolonne.ADRESSEBESKYTTELSE)
         )
+    }
+}
+
+private fun DataTable.tilIdenter(): List<String> {
+    Kolonne.validerAtKolonnenavnErGyldig(this)
+
+    return asMaps().map { rad ->
+        val kolonneMapper = KolonneMapper(rad)
+        kolonneMapper.parseString(Kolonne.IDENT)
     }
 }
 

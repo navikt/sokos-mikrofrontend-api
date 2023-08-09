@@ -1,4 +1,4 @@
-package no.nav.sokos.mikrofrontendapi.api.utbetaling.realistiskedata
+package no.nav.sokos.mikrofrontendapi.api.utbetaling
 
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringData
 import no.nav.sokos.mikrofrontendapi.api.utbetaling.model.PosteringSøkeData

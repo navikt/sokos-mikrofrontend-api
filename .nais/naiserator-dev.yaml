@@ -55,6 +55,10 @@ spec:
     outbound:
       external:
         - host: pdl-api.dev-fss-pub.nais.io
+        - host: skjermede-personer-pip.intern.dev.nav.no
+      rules:
+      - application: skjermede-personer-pip
+        namespace: nom
   env:
     - name: USE_AUTHENTICATION
       value: "true"
@@ -62,5 +66,10 @@ spec:
       value: dev-fss.pdl.pdl-api
     - name: PDL_URL
       value: https://pdl-api.dev-fss-pub.nais.io/graphql
+    - name: SKJERMING_URL
+      value: https://skjermede-personer-pip.intern.dev.nav.no
+    - name: SKJERMING_CLIENT_ID
+      value: dev-gcp.nom.skjermede-personer-pip
+
 
 
