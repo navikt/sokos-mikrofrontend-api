@@ -32,8 +32,6 @@ class SkjermetClientImpl(
     override suspend fun erPersonSkjermet(personIdent: String) : Boolean {
         val token = accessTokenProvider?.getSystemToken(skjermingClientId)?.accessToken
 
-        // TODO: Ta bort logging av token
-        logger.info("Token: $token")
         val skjermetUrl = "${skjermingUrl}/skjermet"
         logger.info("SkjermetUrl: $skjermetUrl")
 
