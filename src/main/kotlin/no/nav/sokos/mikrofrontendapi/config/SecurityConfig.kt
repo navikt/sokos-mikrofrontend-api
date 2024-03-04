@@ -9,9 +9,9 @@ import io.ktor.server.application.Application
 import io.ktor.server.auth.authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
-import mu.KotlinLogging
-import java.net.URL
+import java.net.URI
 import java.util.concurrent.TimeUnit
+import mu.KotlinLogging
 import kotlinx.coroutines.runBlocking
 import no.nav.sokos.mikrofrontendapi.util.httpClient
 
@@ -56,7 +56,7 @@ fun Application.configureSecurity(
 }
 
 private fun cachedJwkProvider(jwksUri: String): JwkProvider {
-    return JwkProviderBuilder(URL(jwksUri))
+    return JwkProviderBuilder(URI(jwksUri).toURL())
         .cached(10, 24, TimeUnit.HOURS) // cache up to 10 JWKs for 24 hours
         .rateLimited(10, 1, TimeUnit.MINUTES) // if not cached, only allow max 10 different keys per minute to be fetched from external provider
         .build()

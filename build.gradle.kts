@@ -2,23 +2,20 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
-val ktorVersion = "2.3.2"
-val junitJupiterVersion = "5.10.0"
-val logbackVersion = "1.4.5"
+val ktorVersion = "2.3.8"
+val logbackVersion = "1.5.0"
 val logstashVersion = "7.4"
-val jacksonVersion = "2.15.2"
-val prometheusVersion = "1.11.2"
+val jacksonVersion = "2.15.3"
+val prometheusVersion = "1.12.3"
 val natpryceVersion = "1.6.10.0"
-val kotlinLoggingVersion = "3.0.4"
+val kotlinLoggingVersion = "3.0.5"
 
 plugins {
-    kotlin("jvm") version "1.9.0"
-    kotlin("plugin.serialization") version "1.9.0"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version "1.9.22"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "no.nav.sokos"
-java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
@@ -59,11 +56,22 @@ dependencies {
     implementation("com.natpryce:konfig:$natpryceVersion")
 }
 
+sourceSets {
+    main {
+        java {
+            srcDirs("${layout.buildDirectory.get()}/generated/src/main/kotlin")
+        }
+    }
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
 
 tasks {
-    withType<KotlinCompile>().configureEach {
-        compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
 
     withType<ShadowJar>().configureEach {
         enabled = true
@@ -78,6 +86,6 @@ tasks {
     }
 
     withType<Wrapper>().configureEach {
-        gradleVersion = "7.6"
+        gradleVersion = "8.5"
     }
 }
