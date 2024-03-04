@@ -50,6 +50,9 @@ spec:
         - application: sokos-utbetalingsportalen
           cluster: dev-gcp
           namespace: okonomi
+        - application: azure-token-generator
+          namespace: aura
+          cluster: dev-gcp
   env:
     - name: USE_AUTHENTICATION
       value: "true"
