@@ -2,19 +2,19 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
-val ktorVersion = "2.3.2"
+val ktorVersion = "2.3.8"
 val junitJupiterVersion = "5.10.0"
-val logbackVersion = "1.4.5"
+val logbackVersion = "1.5.2"
 val logstashVersion = "7.4"
-val jacksonVersion = "2.15.2"
-val prometheusVersion = "1.11.2"
+val jacksonVersion = "2.16.1"
+val prometheusVersion = "1.12.3"
 val natpryceVersion = "1.6.10.0"
-val kotlinLoggingVersion = "3.0.4"
+val kotlinLoggingVersion = "3.0.5"
 
 plugins {
-    kotlin("jvm") version "1.9.0"
-    kotlin("plugin.serialization") version "1.9.0"
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.22"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "no.nav.sokos"
