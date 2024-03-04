@@ -1,16 +1,25 @@
 version: 2
 updates:
-  - package-ecosystem: github-actions
-    directory: "/"
-    schedule:
-      interval: daily
-    open-pull-requests-limit: 10
-
   - package-ecosystem: gradle
     directory: "/"
     schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
-    ignore:
-      - dependency-name: "*"
-        update-types: [ version-update:semver-patch ]
+      interval: weekly
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Oslo"
+    groups:
+      gradle:
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Oslo"
+    groups:
+      github:
+        patterns:
+          - "*"

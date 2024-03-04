@@ -6,7 +6,7 @@ metadata:
   labels:
     team: okonomi
 spec:
-  image: {{image}}
+  image: "{{{ image }}}"
   port: 9500
   replicas:
     min: 1
@@ -44,17 +44,12 @@ spec:
       claims:
         extra:
           - NAVident
-        groups:
-          - id: a366c33c-7456-4183-a0d5-80eb8195a7da # 0000-GA-SOKOS-MF-Utbetalinger-WRITE
   accessPolicy:
     inbound:
       rules:
-        - application: sokos-op-fasade
+        - application: sokos-utbetalingsportalen
           cluster: dev-gcp
           namespace: okonomi
   env:
     - name: USE_AUTHENTICATION
       value: "true"
-
-
-
