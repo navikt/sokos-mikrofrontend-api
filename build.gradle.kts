@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 
 val ktorVersion = "2.3.8"
-val logbackVersion = "1.5.0"
+val logbackVersion = "1.5.2"
 val logstashVersion = "7.4"
-val jacksonVersion = "2.15.3"
+val jacksonVersion = "2.16.1"
 val prometheusVersion = "1.12.3"
 val natpryceVersion = "1.6.10.0"
 val kotlinLoggingVersion = "3.0.5"
