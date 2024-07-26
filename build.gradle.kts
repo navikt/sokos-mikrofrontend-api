@@ -1,16 +1,11 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-
-
-val ktorVersion = "2.3.11"
-val logbackVersion = "1.5.6"
-val logstashVersion = "7.4"
-val jacksonVersion = "2.17.1"
-val prometheusVersion = "1.12.3"
-val natpryceVersion = "1.6.10.0"
-val kotlinLoggingVersion = "3.0.5"
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -21,35 +16,46 @@ repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
 }
 
+val ktorVersion = "2.3.12"
+val logbackVersion = "1.5.6"
+val logstashVersion = "7.4"
+val micrometerVersion = "1.13.2"
+val kotlinLoggingVersion = "3.0.5"
+val janionVersion = "3.1.12"
+val natpryceVersion = "1.6.10.0"
+val kotestVersion = "5.9.1"
+val kotlinxSerializationVersion = "1.7.1"
+val mockOAuth2ServerVersion = "2.1.8"
+val mockkVersion = "1.13.11"
+
 dependencies {
-    // Ktor
-    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
+    // Ktor server
+    implementation("io.ktor:ktor-server-call-logging-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-id-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-client-apache:$ktorVersion")
+    implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktorVersion")
+    implementation("io.ktor:ktor-server-swagger:$ktorVersion")
+
+    // Ktor client
     implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.ktor:ktor-server:$ktorVersion")
-    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
-    implementation("io.ktor:ktor-server-cors:$ktorVersion")
+    implementation("io.ktor:ktor-client-apache-jvm:$ktorVersion")
 
     // Security
     implementation("io.ktor:ktor-server-auth-jvm:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktorVersion")
 
-    // Jackson
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
-    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+    // Serialization
+    implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktorVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:$kotlinxSerializationVersion")
 
     // Monitorering
-    implementation("io.micrometer:micrometer-registry-prometheus:$prometheusVersion")
+    implementation("io.ktor:ktor-server-metrics-micrometer-jvm:$ktorVersion")
+    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
     // Logging
-    implementation("ch.qos.logback:logback-core:$logbackVersion")
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingVersion")
+    runtimeOnly("ch.qos.logback:logback-classic:$logbackVersion")
+    runtimeOnly("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
 
     // Config
     implementation("com.natpryce:konfig:$natpryceVersion")
@@ -69,14 +75,13 @@ kotlin {
     }
 }
 
-
 tasks {
 
     withType<ShadowJar>().configureEach {
         enabled = true
         archiveFileName.set("app.jar")
         manifest {
-            attributes["Main-Class"] = "no.nav.sokos.mikrofrontendapi.BootstrapKt"
+            attributes["Main-Class"] = "no.nav.sokos.prosjektnavn.ApplicationKt"
         }
     }
 
@@ -84,7 +89,20 @@ tasks {
         enabled = false
     }
 
-    withType<Wrapper>().configureEach {
-        gradleVersion = "8.5"
+    withType<Test>().configureEach {
+        useJUnitPlatform()
+
+        testLogging {
+            showExceptions = true
+            showStackTraces = true
+            exceptionFormat = FULL
+            events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+        }
+
+        reports.forEach { report -> report.required.value(false) }
+    }
+
+    withType<Wrapper> {
+        gradleVersion = "8.9"
     }
 }

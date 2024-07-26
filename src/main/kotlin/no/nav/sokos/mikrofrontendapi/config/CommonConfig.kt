@@ -1,79 +1,92 @@
 package no.nav.sokos.mikrofrontendapi.config
 
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.serialization.jackson.jackson
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
+import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.metrics.micrometer.MicrometerMetrics
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.request.path
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.get
+import io.ktor.server.routing.route
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics
 import io.micrometer.core.instrument.binder.system.UptimeMetrics
-import java.util.*
-import mu.KotlinLogging
-import no.nav.sokos.mikrofrontendapi.metrics.prometheusRegistry
+import kotlinx.serialization.json.Json
 import org.slf4j.event.Level
-
-private val log = KotlinLogging.logger {}
+import java.util.UUID
+import no.nav.sokos.mikrofrontendapi.metrics.Metrics
 
 fun Application.commonConfig() {
     install(CallId) {
         header(HttpHeaders.XCorrelationId)
         generate { UUID.randomUUID().toString() }
-        verify { it.isNotEmpty() }
+        verify { callId: String -> callId.isNotEmpty() }
     }
     install(CallLogging) {
-        logger = log
         level = Level.INFO
         callIdMdc(HttpHeaders.XCorrelationId)
         filter { call -> call.request.path().startsWith("/api") }
         disableDefaultColors()
     }
     install(ContentNegotiation) {
-        jackson {
-            customConfig()
-        }
-    }
-    install(MicrometerMetrics) {
-        registry = prometheusRegistry
-        meterBinders = listOf(
-            UptimeMetrics(),
-            JvmMemoryMetrics(),
-            JvmGcMetrics(),
-            JvmThreadMetrics(),
-            ProcessorMetrics()
+        json(
+            Json {
+                prettyPrint = true
+                ignoreUnknownKeys = true
+                encodeDefaults = true
+                explicitNulls = false
+            },
         )
     }
-    install(CORS) {
-        allowCredentials = true
-        allowHost("okonomiportalen.intern.dev.nav.no", listOf("https"))
-        allowMethod(HttpMethod.Get)
-        allowMethod(HttpMethod.Post)
-        allowHeader(HttpHeaders.Accept)
-        allowHeader(HttpHeaders.ContentType)
+    install(MicrometerMetrics) {
+        registry = Metrics.prometheusMeterRegistry
+        meterBinders =
+            listOf(
+                UptimeMetrics(),
+                JvmMemoryMetrics(),
+                JvmGcMetrics(),
+                JvmThreadMetrics(),
+                ProcessorMetrics(),
+            )
     }
 }
 
-fun ObjectMapper.customConfig() {
-    registerKotlinModule()
-    registerModule(JavaTimeModule())
-    setSerializationInclusion(JsonInclude.Include.NON_NULL)
-    configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-    configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    enable(SerializationFeature.INDENT_OUTPUT)
+fun Routing.internalNaisRoutes(
+    applicationState: ApplicationState,
+    readynessCheck: () -> Boolean = { applicationState.ready },
+    alivenessCheck: () -> Boolean = { applicationState.alive },
+) {
+    route("internal") {
+        get("isAlive") {
+            when (alivenessCheck()) {
+                true -> call.respondText { "I'm alive :)" }
+                else ->
+                    call.respondText(
+                        text = "I'm dead x_x",
+                        status = HttpStatusCode.InternalServerError,
+                    )
+            }
+        }
+        get("isReady") {
+            when (readynessCheck()) {
+                true -> call.respondText { "I'm ready! :)" }
+                else ->
+                    call.respondText(
+                        text = "Wait! I'm not ready yet! :O",
+                        status = HttpStatusCode.InternalServerError,
+                    )
+            }
+        }
+    }
 }
 
