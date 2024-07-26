@@ -9,18 +9,15 @@ import no.nav.sokos.mikrofrontendapi.config.AUTHENTICATION_NAME
 import no.nav.sokos.mikrofrontendapi.config.authenticate
 import no.nav.sokos.mikrofrontendapi.models.Employee
 
+private const val BASE_PATH = "/api/v1"
 
 fun Routing.employeeApi(
     useAuthentication: Boolean
 ) {
 
     authenticate(useAuthentication, AUTHENTICATION_NAME) {
-        route("api") {
+        route(BASE_PATH) {
             get("employee") {
-                // Retrieve the token from the request headers
-                val authorizationHeader = call.request.headers["Authorization"]
-                val token = authorizationHeader?.removePrefix("Bearer ")
-                println("TOKEN::::::::::::::: $token")
                 val employee1 = Employee(
                     1,
                     "Ola Nordmann",
