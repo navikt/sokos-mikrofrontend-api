@@ -81,7 +81,7 @@ tasks {
         enabled = true
         archiveFileName.set("app.jar")
         manifest {
-            attributes["Main-Class"] = "no.nav.sokos.prosjektnavn.ApplicationKt"
+            attributes["Main-Class"] = "no.nav.sokos.mikrofrontendapi.ApplicationKt"
         }
     }
 
