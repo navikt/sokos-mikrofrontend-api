@@ -4,8 +4,8 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "2.0.0"
-    kotlin("plugin.serialization") version "2.0.0"
+    kotlin("jvm") version "2.0.10"
+    kotlin("plugin.serialization") version "2.0.10"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -18,7 +18,7 @@ repositories {
 
 val ktorVersion = "2.3.12"
 val logbackVersion = "1.5.6"
-val logstashVersion = "7.4"
+val logstashVersion = "8.0"
 val micrometerVersion = "1.13.2"
 val kotlinLoggingVersion = "3.0.5"
 val janionVersion = "3.1.12"
